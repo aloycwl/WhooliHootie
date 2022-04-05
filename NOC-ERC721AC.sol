@@ -41,7 +41,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
     }
     mapping(uint256=>AC)public ac;
     mapping(uint256=>GEN)public age;
-    mapping(address=>uint256[])private tokens;
+    mapping(address=>uint256[])public tokens;
     modifier onlyOwner(){
         require(_owner==msg.sender);_;
     }
@@ -164,12 +164,15 @@ contract ERC721AC is IERC721,IERC721Metadata{
     function BREED(uint256 _1,uint256 _2)external{
         unchecked{
             bool existed;
-            for(uint256 i=0;i<tokens[msg.sender].length;i++){
+            for(uint256 i=tokens[msg.sender].length-1;i>1;i--){
                 if((ac[tokens[msg.sender][i]].parent1==_1&&ac[tokens[msg.sender][i]].parent2==_2)||
-                (ac[tokens[msg.sender][i]].parent2==_1&&ac[tokens[msg.sender][i]].parent1==_2))existed==true;
+                (ac[tokens[msg.sender][i]].parent2==_1&&ac[tokens[msg.sender][i]].parent1==_2)){
+                    existed=true;
+                    break;
+                }
             }
-            /*require(!existed&&  //never mint before
-                ac[_1].gen==ac[_2].gen&& //must be same gen
+            require(!existed&&  //never mint before
+                ac[_1].gen==ac[_2].gen);/*&& //must be same gen
                 ac[_1].owner==msg.sender&&ac[_2].owner==msg.sender&& //must only owner of _1 and _2
                 ac[_1].time+WAIT<block.timestamp&&ac[_2].time+WAIT<block.timestamp&& //parents not minted recently
                 (ac[_1].sex==1&&ac[_2].sex==2)||(ac[_2].sex==1&&ac[_1].sex==2) //must be different sex
@@ -181,6 +184,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
             ac[_1].time=block.timestamp;
             ac[_2].time=block.timestamp;
         }
+        
     }
   /* 
      UAT Preparation
