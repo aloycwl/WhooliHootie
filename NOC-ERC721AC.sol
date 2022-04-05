@@ -173,6 +173,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
                 ac[_1].owner==msg.sender&&ac[_2].owner==msg.sender&& //must only owner of _1 and _2
                 ac[_1].time+WAIT<block.timestamp&&ac[_2].time+WAIT<block.timestamp&& //parents not minted recently
                 (ac[_1].sex==1&&ac[_2].sex==2)||(ac[_2].sex==1&&ac[_1].sex==2) //must be different sex
+                HOW
             );*/
             _mint(msg.sender,ac[_1].gen+1);
             ac[count].parent1=_1;
