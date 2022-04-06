@@ -139,7 +139,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
     }
     function _mint(address _a, uint256 _g)private{
         unchecked{
-            //require(age[_g].currentCount<age[_g].maxCount&&age[_g].breedable); [DEPLOYMENT TO UNCOMMENT]
+            require(age[_g].currentCount<age[_g].maxCount&&age[_g].breedable);
             count++;
             age[_g].currentCount++;
             ac[count].owner=_a;
