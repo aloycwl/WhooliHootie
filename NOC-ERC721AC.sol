@@ -165,8 +165,8 @@ contract ERC721AC is IERC721,IERC721Metadata{
         unchecked{
             bool existed;
             for(uint256 i=tokens[msg.sender].length-1;i>1;i--){
-                if((ac[tokens[msg.sender][i]].parent1==_1&&ac[tokens[msg.sender][i]].parent2==_2)||
-                (ac[tokens[msg.sender][i]].parent2==_1&&ac[tokens[msg.sender][i]].parent1==_2)){
+                if(((ac[tokens[msg.sender][i]].parent1==_1&&ac[tokens[msg.sender][i]].parent2==_2)||
+                (ac[tokens[msg.sender][i]].parent2==_1&&ac[tokens[msg.sender][i]].parent1==_2))){
                     existed=true;
                     break;
                 }
