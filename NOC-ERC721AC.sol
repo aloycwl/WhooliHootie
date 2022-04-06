@@ -175,9 +175,8 @@ contract ERC721AC is IERC721,IERC721Metadata{
             require(!existed&& //never mint before
                 ac[_1].gen==ac[_2].gen&& //must be same gen
                 ac[_1].owner==msg.sender&&ac[_2].owner==msg.sender&& //must only owner of _1 and _2
-                (ac[_1].sex==0&&ac[_2].sex==1||ac[_2].sex==0&&ac[_1].sex==1)); //must be different sex
-                /*ac[_1].time+WAIT<block.timestamp&&ac[_2].time+WAIT<block.timestamp&& //parents not minted recently
-            );*/
+                (ac[_1].sex==0&&ac[_2].sex==1||ac[_2].sex==0&&ac[_1].sex==1)&& //must be different sex
+                ac[_1].time+WAIT<block.timestamp&&ac[_2].time+WAIT<block.timestamp);//parents not minted recently
             _mint(msg.sender,ac[_1].gen+1);
             ac[count].parent1=_1;
             ac[count].parent2=_2;
