@@ -22,9 +22,9 @@ interface IERC721Metadata{
 contract ERC721AC is IERC721,IERC721Metadata{
     uint256 private constant WAIT=0; //[DEPLOYMENT SET TO 604800 (1 WEEK)]
     uint256 private constant COST=0 ether;  //[DEPLOYMENT SET TO 0.88]
-    uint256 public count=0;
     uint256 private percent=5;
     address private _owner;
+    uint256 public count=0;
     struct AC{
         address owner;
         uint256 parent1;
