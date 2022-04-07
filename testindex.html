@@ -1,77 +1,83 @@
-<script src='https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js'></script>
 
-<button onclick="printCoolNumber();">Print Num</button>
-<button onclick="changeCoolNumber();">Change Num</button>
-<br /><br />
-Status: <span id="status">Loading...</span>
+<script src='https://cdn.jsdelivr.net/npm/web3@3.0.0-rc.5/dist/web3.min.js'></script>
+<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+
+<button id="connect">Connect</button><br/><br/>
+
+<button onclick="getCount()">Current Token Count</button><br/>
+<button onclick="getName()">Name</button><br/>
+<button onclick="getSymbol()">Symbol</button><br/>
+<button onclick="getWallet()">My Tokens</button><br/>
+<button onclick="getBalance()">Contact Wallet Balance</button><br/><br/>
+
+<input type="text" id="tokenURI" size="4"/><button onclick="getTokenURI()">Token URI</button><br/>
+<input type="text" id="ownerOf" size="4"/><button onclick="getOwnerOf()">Owner Of</button><br/>
+<input type="text" id="getGenCount" size="4"/><button onclick="getGenCount()">Generation Current Count</button><br/>
+<input type="text" id="ac" size="4"/><button onclick="ac()">Token Info</button><br/><br/>
+
+<button onclick="MINT()">MINT</button><br/>
+<button onclick="DISTRIBUTE()">DISTRIBUTE</button><br/>
+<input type="text" id="parent1" size="4"/><input type="text" id="parent2" size="4"/><button onclick="BREED()">BREED</button><br/><br/>
+
+<span id="status"></span>
 
 <script type="text/javascript">
-    async function loadWeb3() {
-	if (window.ethereum) {
-		window.web3 = new Web3(window.ethereum);
-		window.ethereum.enable();
-	}
+document.getElementById('connect').addEventListener('click',()=>{ethereum.request({method:'eth_requestAccounts'});});
+async function getCount(){
+	$('#status').html(await contract.methods.count.call().call());
 }
-
-async function loadContract() {
-	return await new window.web3.eth.Contract([{
-			"inputs": [],
-			"name": "coolNumber",
-			"outputs": [{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}],
-			"stateMutability": "view",
-			"type": "function"
-		},
-		{
-			"inputs": [{
-				"internalType": "uint256",
-				"name": "_coolNumber",
-				"type": "uint256"
-			}],
-			"name": "setCoolNumber",
-			"outputs": [],
-			"stateMutability": "nonpayable",
-			"type": "function"
-		}
-	], '0x7B2093a9C2E55632221A70B42229fD1C9803435e');
+async function getName(){
+	$('#status').html(await contract.methods.name.call().call());
 }
-
-async function printCoolNumber() {
-	updateStatus('fetching Cool Number...');
-	const coolNumber = await window.contract.methods.coolNumber().call();
-	updateStatus(`coolNumber: ${coolNumber}`);
+async function getSymbol(){
+	$('#status').html(await contract.methods.symbol.call().call());
 }
-
-async function getCurrentAccount() {
-	const accounts = await window.web3.eth.getAccounts();
-	return accounts[0];
-	r
+async function getWallet(){
+  const intWall=await contract.methods.getWallet.call();
+	$('#status').html(intWall.length);
+	//s.innerHTML=(`${await contract.methods.getWallet.call().call()}`);
+	//still unstable, maybe have to add in address constructor in smart contract
 }
-
-async function changeCoolNumber() {
-	const value = Math.floor(Math.random() * 100);
-	updateStatus(`Updating coolNumber with ${value}`);
-	const account = await getCurrentAccount();
-	const coolNumber = await window.contract.methods.setCoolNumber(value).send({
-		from: account
+async function getBalance(){
+	$('#status').html(await contract.methods.getBalance.call().call());
+}
+async function getTokenURI(){
+	$('#status').html(await contract.methods.tokenURI($("#tokenURI").val()).call());
+}
+async function getOwnerOf(){
+	$('#status').html(await contract.methods.ownerOf($("#ownerOf").val()).call());
+}
+async function getGenCount(){
+	$('#status').html(await contract.methods.getGenCount($("#getGenCount").val()).call());
+}
+async function ac(){
+	await contract.methods.ac($("#ac").val()).call().then(function(result){
+		$('#status').html(result[0]+', '+result[1]+', '+result[2]+', '+result[3]+', '+result[4]+', '+result[5]);
 	});
-	updateStatus('Updated.');
 }
-
-async function load() {
-	await loadWeb3();
-	window.contract = await loadContract();
-	updateStatus('Ready!');
+async function getCurrentAccount(){
+	const accounts=await web3.eth.getAccounts();
+	return accounts[0];
 }
-
-function updateStatus(status) {
-	const statusEl = document.getElementById('status');
-	statusEl.innerHTML = status;
-	console.log(status);
+async function MINT(){
+	await contract.methods.MINT().send({from:await getCurrentAccount()});
+	$('#status').html('Minted');
 }
-
+async function DISTRIBUTE(){
+	await contract.methods.DISTRIBUTE().send({from:await getCurrentAccount()});
+	$('#status').html('Distributed');
+}
+async function BREED(){
+	await contract.methods.BREED($("#parent1").val(),$("#parent2").val()).send({from:await getCurrentAccount()});
+	$('#status').html('Breeded');
+}
+async function load(){
+	if(ethereum){
+		web3=new Web3(ethereum);
+		ethereum.enable();
+	}
+	contract=new web3.eth.Contract([{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"approved","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"operator","type":"address"},{"indexed":!1,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"from","type":"address"},{"indexed":!0,"internalType":"address","name":"to","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"AIRDROP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_1","type":"uint256"},{"internalType":"uint256","name":"_2","type":"uint256"}],"name":"BREED","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"DISTRIBUTE","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bool","name":"_b","type":"bool"},{"internalType":"uint256","name":"_x","type":"uint256"},{"internalType":"string","name":"_f","type":"string"},{"internalType":"string","name":"_m","type":"string"}],"name":"GENPREP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"MINT","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"ac","outputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"parent1","type":"uint256"},{"internalType":"uint256","name":"parent2","type":"uint256"},{"internalType":"uint256","name":"time","type":"uint256"},{"internalType":"uint256","name":"gen","type":"uint256"},{"internalType":"uint256","name":"sex","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"count","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_g","type":"uint256"}],"name":"getGenCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getWallet","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bytes","name":"_d","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_p","type":"uint256"}],"name":"setPercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"_t","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"}],'0x64b7bb213F499a81209d8142Fe540f84bE54573b');
+	$('#status').html('Network ID: '+await web3.eth.net.getId());
+}
 load();
 </script>
