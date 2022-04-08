@@ -40,7 +40,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
         string[2]baseURI; //sex:0-f/1-m
     }
     mapping(uint256=>AC)public ac;
-    mapping(uint256=>GEN)private age;
+    mapping(uint256=>GEN)public age;
     mapping(address=>uint256[])private tokens;
     modifier onlyOwner(){
         require(_owner==msg.sender);_;
@@ -118,9 +118,6 @@ contract ERC721AC is IERC721,IERC721Metadata{
     function getBalance()external view returns(uint256){
         return address(this).balance;
     }
-    function getGenCount(uint256 _g)external view returns(uint256){
-        return age[_g].currentCount;
-    }
     function setPercent(uint256 _p)external onlyOwner(){
         percent=_p;
     }
@@ -134,9 +131,14 @@ contract ERC721AC is IERC721,IERC721Metadata{
         unchecked{
             for(uint256 i=1;i<=count;i++){
                 payable(payable(ac[i].owner)).call{value:address(this).balance/count}("");
+
             }
         }
     }
+    /*25 owls 10%
+    50 owls 20%
+    75 owls 30%
+    100 owls 40%*/ 
     function _mint(address _a, uint256 _g)private{
         unchecked{
             require(age[_g].currentCount<age[_g].maxCount&&age[_g].breedable);

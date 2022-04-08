@@ -1,4 +1,3 @@
-
 <script src='https://cdn.jsdelivr.net/npm/web3@3.0.0-rc.5/dist/web3.min.js'></script>
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
 
@@ -33,8 +32,8 @@ async function getSymbol(){
 	$('#status').html(await contract.methods.symbol.call().call());
 }
 async function getWallet(){
-  const intWall=await contract.methods.getWallet.call();
-	$('#status').html(intWall.length);
+  const intWall=await contract.methods.getWallet.call().call();
+	//$('#status').html(intWall.length);
 	//s.innerHTML=(`${await contract.methods.getWallet.call().call()}`);
 	//still unstable, maybe have to add in address constructor in smart contract
 }
