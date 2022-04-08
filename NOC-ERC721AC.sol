@@ -41,7 +41,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
     }
     mapping(uint256=>AC)public ac;
     mapping(uint256=>GEN)public age;
-    mapping(address=>uint256[])private tokens;
+    mapping(address=>uint256[])public tokens;
     modifier onlyOwner(){
         require(_owner==msg.sender);_;
     }
@@ -112,8 +112,8 @@ contract ERC721AC is IERC721,IERC721Metadata{
     function getApproved(uint256 _c)external view override returns(address){
         return msg.sender;
     }
-    function getWallet()external view returns(uint256[]memory){
-        return tokens[msg.sender];
+    function getWallet(address _a)external view returns(uint256[]memory){
+        return tokens[_a];
     }
     function getBalance()external view returns(uint256){
         return address(this).balance;
@@ -135,10 +135,6 @@ contract ERC721AC is IERC721,IERC721Metadata{
             }
         }
     }
-    /*25 owls 10%
-    50 owls 20%
-    75 owls 30%
-    100 owls 40%*/ 
     function _mint(address _a, uint256 _g)private{
         unchecked{
             require(age[_g].currentCount<age[_g].maxCount&&age[_g].breedable);
