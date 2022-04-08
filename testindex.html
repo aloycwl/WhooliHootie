@@ -1,5 +1,5 @@
 <script src='https://cdn.jsdelivr.net/npm/web3@3.0.0-rc.5/dist/web3.min.js'></script>
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <button id="connect">Connect</button><br/><br/>
 
@@ -33,9 +33,12 @@ async function getSymbol(){
 }
 async function getWallet(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
-	var str='';
-	for(let i=0;i<arr.length;i++)str=str+arr[i]+'<br/>';
-	$('#status').html(str);
+	$('#status').html('');
+	for(let i=0;i<arr.length;i++){
+		$.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(data){
+			$('#status').append('<p><b>'+data.name+'#'+arr[i]+'</b> <i>' + data.description + '</i><br/><img src=\'' + data.image + '\'></p>');
+		});
+	}
 }
 async function getBalance(){
 	$('#status').html(await contract.methods.getBalance.call().call());

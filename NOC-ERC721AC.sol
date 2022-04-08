@@ -127,8 +127,20 @@ contract ERC721AC is IERC721,IERC721Metadata{
         age[_c].baseURI[0]=_f;
         age[_c].baseURI[1]=_m;
     }
-    function DISTRIBUTE()external{
+    function DISTRIBUTE(address _a1,address _a2,address _a3,address _a4,address _a5,
+        address _a6,address _a7,address _a8,address _a9,address _a10)external onlyOwner{
         unchecked{
+            uint256 _2percent=address(this).balance*4/9;
+            payable(payable(_a1)).call{value:_2percent*3/10}("");
+            payable(payable(_a2)).call{value:_2percent*2/10}("");
+            payable(payable(_a3)).call{value:_2percent*1/10}("");
+            payable(payable(_a4)).call{value:_2percent*1/10}("");
+            payable(payable(_a5)).call{value:_2percent*1/10}("");
+            payable(payable(_a6)).call{value:_2percent*1/20}("");
+            payable(payable(_a7)).call{value:_2percent*1/20}("");
+            payable(payable(_a8)).call{value:_2percent*1/20}("");
+            payable(payable(_a9)).call{value:_2percent*1/50}("");
+            payable(payable(_a10)).call{value:_2percent*1/50}("");
             for(uint256 i=1;i<=count;i++){
                 payable(payable(ac[i].owner)).call{value:address(this).balance/count}("");
 
@@ -157,6 +169,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
             for(uint256 i=1;i<=count;i++){
                 payable(payable(ac[i].owner)).call{value:address(this).balance*percent/100/count}("");
             }
+            //remove above to change to distribute instead? so every mining cheaper
             payable(_owner).call{value:address(this).balance}("");
         }
     }
