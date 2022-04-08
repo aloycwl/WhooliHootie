@@ -4,15 +4,12 @@
 
 <div id="connect"><button onclick="getCurrentAccount()">Connect</button><br/><br/></div>
 
-<button onclick="getCount()">Current Token Count</button><br/>
 <p id="name">Name: </p>
-<button onclick="getWallet()">My Tokens</button><br/>
-<p id="balance">Contract Wallet Balance: </p><br/>
+<p id="balance">Contract Wallet Balance: </p>
+<button onclick="getWallet()">My Tokens</button><br/><br/>
 
 <input type="text" id="tokenURI" size="4"/><button onclick="getTokenURI()">Token URI</button><br/>
-<input type="text" id="ownerOf" size="4"/><button onclick="getOwnerOf()">Owner Of</button><br/>
-<input type="text" id="getGenInfo" size="4"/><button onclick="getGenInfo()">Generation Info</button><br/>
-<input type="text" id="ac" size="4"/><button onclick="ac()">Token Info</button><br/><br/>
+<input type="text" id="getGenInfo" size="4"/><button onclick="getGenInfo()">Generation Info</button><br/><br/>
 
 <button onclick="MINT()">MINT</button><br/>
 <button onclick="DISTRIBUTE()">DISTRIBUTE</button><br/>
@@ -22,12 +19,22 @@
 
 <script type="text/javascript">
 document.getElementById('connect').addEventListener('click',()=>{ethereum.request({method:'eth_requestAccounts'});$('#connect').hide();});
+
 async function getWallet(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
 	$('#status').html('');
 	for(let i=0;i<arr.length;i++){
+		await contract.methods.ac(arr[i]).call().then(function(result){
+			$('#status').append(
+				'<p>Owner Address: '+result[0]+
+				'<br/>Parent1 ID: '+result[1]+
+				'<br/>Parent2 ID: '+result[2]+
+				'<br/>Last breeded: '+(result[3]>0?moment(moment.unix(result[3])).fromNow():'Since forever')+
+				'<br/>Generation: '+result[4]+
+				'<br/>Gender: '+(result[5]==0?'Female':'Male'))
+		});
 		$.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(data){
-			$('#status').append('<p><b>'+data.name+'#'+arr[i]+'</b> <i>' + data.description + '</i><br/><img src=\'' + data.image + '\'></p>');
+			$('#status').append('<br/>'+data.name+'#'+arr[i]+' '+data.description+'<br/><img src=\'' + data.image + '\'></p>');
 		});
 	}
 }
@@ -37,23 +44,9 @@ async function getBalance(){
 async function getTokenURI(){
 	$('#status').html(await contract.methods.tokenURI($("#tokenURI").val()).call());
 }
-async function getOwnerOf(){
-	$('#status').html(await contract.methods.ownerOf($("#ownerOf").val()).call());
-}
 async function getGenInfo(){
 	await contract.methods.age($("#getGenInfo").val()).call().then(function(result){
 		$('#status').html(result[0]+', '+result[1]+', '+result[2]);
-	});
-}
-async function ac(){
-	await contract.methods.ac($("#ac").val()).call().then(function(result){
-		$('#status').html(
-			'Owner Address: '+result[0]+
-			'<br/>Parent1 ID: '+result[1]+
-			'<br/>Parent2 ID: '+result[2]+
-			'<br/>Last breeded: '+(result[3]>0?moment(moment.unix(result[3])).fromNow():'Since forever')+
-			'<br/>Generation: '+result[4]+
-			'<br/>Gender: '+(result[5]==0?'Female':'Male'));
 	});
 }
 async function getCurrentAccount(){
@@ -83,8 +76,7 @@ async function load(){
 	await web3.eth.getAccounts(function(err,accts){
     if(accts.length==0)$('#connect').show();
     else $('#connect').hide();});
-	$('#status').html('Network ID: '+await web3.eth.net.getId());
-	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call()+')');
+	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call()+') <i>Network ID: '+await web3.eth.net.getId()+'</i>');
 	$('#balance').append(await contract.methods.getBalance.call().call());
 	
 }

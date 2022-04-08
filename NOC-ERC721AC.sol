@@ -194,6 +194,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
             ac[_1].time=block.timestamp;
             ac[_2].time=block.timestamp;
         }
+        emit Transfer(address(0),msg.sender,count);
     }
 } 
 /* 
