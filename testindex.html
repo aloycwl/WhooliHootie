@@ -2,6 +2,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 
+<style>
+	.nft{cursor:pointer}
+	.boxnft{display:inline-block}
+</style>
+
 <div id="connect"><button onclick="getCurrentAccount()">Connect</button><br/><br/></div>
 
 <p id="name">Name: </p>
@@ -15,27 +20,40 @@
 <button onclick="DISTRIBUTE()">DISTRIBUTE</button><br/>
 <input type="text" id="parent1" size="4"/><input type="text" id="parent2" size="4"/><button onclick="BREED()">BREED</button><br/>
 
-<p id="status"></p>
+<p id="status"></p><br/>
+
+<div id="breed1" class="boxnft"></div> <div id="breed2" class="boxnft"></div>
 
 <script type="text/javascript">
+var myOwls=new Array();
+
 document.getElementById('connect').addEventListener('click',()=>{ethereum.request({method:'eth_requestAccounts'});$('#connect').hide();});
+
+ 
 
 async function getWallet(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
 	$('#status').html('');
 	for(let i=0;i<arr.length;i++){
+		myOwls[i]=new Array();
 		await contract.methods.ac(arr[i]).call().then(function(result){
-			$('#status').append(
-				'<p>Owner Address: '+result[0]+
-				'<br/>Parent1 ID: '+result[1]+
-				'<br/>Parent2 ID: '+result[2]+
-				'<br/>Last breeded: '+(result[3]>0?moment(moment.unix(result[3])).fromNow():'Since forever')+
-				'<br/>Generation: '+result[4]+
-				'<br/>Gender: '+(result[5]==0?'Female':'Male'))
+			myOwls[i][0]=result[1];
+			myOwls[i][1]=result[2];
+			myOwls[i][2]=result[3];
+			myOwls[i][3]=result[4];
+			myOwls[i][4]=result[5];
 		});
-		$.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(data){
-			$('#status').append('<br/>'+data.name+'#'+arr[i]+' '+data.description+'<br/><img src=\'' + data.image + '\'></p>');
+		await $.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(data){
+			myOwls[i][5]=data.name+'#'+arr[i];
+			myOwls[i][6]=data.image;
 		});
+		$('#status').append(
+			'<p class="boxnft"><b>'+myOwls[i][5]+
+			'</b><br/>Parents ID: '+myOwls[i][0]+' / '+myOwls[i][1]+
+			'<br/>Last breeded: '+(myOwls[i][2]>0?moment(moment.unix(myOwls[i][2])).fromNow():'Since forever')+
+			'<br/>Generation: '+myOwls[i][3]+' ('+(myOwls[i][4]==0?'Female':'Male')+')'+
+			'<br/><img onclick="alert(\'asd\')" src="'+myOwls[i][6]+'" class="nft"></p>'
+		);
 	}
 }
 async function getBalance(){
@@ -57,10 +75,6 @@ async function MINT(){
 	await contract.methods.MINT().send({from:await getCurrentAccount()});
 	$('#status').html('Minted');
 }
-async function DISTRIBUTE(){
-	await contract.methods.DISTRIBUTE().send({from:await getCurrentAccount()});
-	$('#status').html('Distributed');
-}
 async function BREED(){
 	await contract.methods.BREED($("#parent1").val(),$("#parent2").val()).send({from:await getCurrentAccount()});
 	$('#status').html('Breeded');
@@ -78,7 +92,6 @@ async function load(){
     else $('#connect').hide();});
 	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call()+') <i>Network ID: '+await web3.eth.net.getId()+'</i>');
 	$('#balance').append(await contract.methods.getBalance.call().call());
-	
 }
 load();
 
