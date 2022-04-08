@@ -157,7 +157,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
             ac[count].gen=_g;
             tokens[_a].push(count);
         }
-        emit Transfer(address(0),msg.sender,age[_g].currentCount);
+        emit Transfer(address(0),msg.sender,count);
     }
     function AIRDROP(address _a)external onlyOwner{
         _mint(_a,1);
