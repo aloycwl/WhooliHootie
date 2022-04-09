@@ -7,65 +7,70 @@
 	.boxnft{display:inline-block}
 </style>
 
-<div id="connect"><button onclick="getCurrentAccount()">Connect</button><br/><br/></div>
+<div id="connect"><a href="#" onclick="getCurrentAccount()">Connect</a><br/></div>
 
 <p id="name">Name: </p>
 <p id="balance">Contract Wallet Balance: </p>
 <button onclick="getWallet()">My Tokens</button><br/><br/>
 
-<input type="text" id="tokenURI" size="4"/><button onclick="getTokenURI()">Token URI</button><br/>
-<input type="text" id="getGenInfo" size="4"/><button onclick="getGenInfo()">Generation Info</button><br/><br/>
-
-<button onclick="MINT()">MINT</button><br/>
-<button onclick="DISTRIBUTE()">DISTRIBUTE</button><br/>
-<input type="text" id="parent1" size="4"/><input type="text" id="parent2" size="4"/><button onclick="BREED()">BREED</button><br/>
+<button onclick="MINT()">MINT</button> <a id="lblMint"></a><br/>
+<div id="breed1" class="boxnft"></div> <div id="breed2" class="boxnft"></div>
+<button id="breed" onclick="BREED()" disabled>BREED</button> <a id="lblBreed"></a><br/>
 
 <p id="status"></p><br/>
 
-<div id="breed1" class="boxnft"></div> <div id="breed2" class="boxnft"></div>
-
 <script type="text/javascript">
 var myOwls=new Array();
+var breed1,breed2;
 
 document.getElementById('connect').addEventListener('click',()=>{ethereum.request({method:'eth_requestAccounts'});$('#connect').hide();});
-
- 
 
 async function getWallet(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
 	$('#status').html('');
 	for(let i=0;i<arr.length;i++){
 		myOwls[i]=new Array();
-		await contract.methods.ac(arr[i]).call().then(function(result){
-			myOwls[i][0]=result[1];
-			myOwls[i][1]=result[2];
-			myOwls[i][2]=result[3];
-			myOwls[i][3]=result[4];
-			myOwls[i][4]=result[5];
+		await contract.methods.ac(arr[i]).call().then(function(data){
+			myOwls[i][0]=data[1];
+			myOwls[i][1]=data[2];
+			myOwls[i][2]=data[3];
+			myOwls[i][3]=data[4];
+			myOwls[i][4]=data[5];
 		});
+		//await contract.methods.tokenURI(arr[i]).call(); //tokenURI
 		await $.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(data){
 			myOwls[i][5]=data.name+'#'+arr[i];
 			myOwls[i][6]=data.image;
+			myOwls[i][7]=arr[i];
 		});
 		$('#status').append(
 			'<p class="boxnft"><b>'+myOwls[i][5]+
 			'</b><br/>Parents ID: '+myOwls[i][0]+' / '+myOwls[i][1]+
 			'<br/>Last breeded: '+(myOwls[i][2]>0?moment(moment.unix(myOwls[i][2])).fromNow():'Since forever')+
 			'<br/>Generation: '+myOwls[i][3]+' ('+(myOwls[i][4]==0?'Female':'Male')+')'+
-			'<br/><img onclick="alert(\'asd\')" src="'+myOwls[i][6]+'" class="nft"></p>'
+			'<br/><img id="'+arr[i]+'" onclick="loadImg('+i+')" src="'+myOwls[i][6]+'" class="nft"></p>'
 		);
+		//loop and show only available ids
 	}
 }
-async function getBalance(){
-	$('#status').html(await contract.methods.getBalance.call().call());
+async function loadImg(p1){
+	if($('#breed1').is(':empty')){
+		$('#breed1').html('<img onclick="unloadImg(1)" src="'+myOwls[p1][6]+'" class="nft">');
+		breed1=myOwls[p1][7];
+	}else if($('#breed2').is(':empty')){
+		$('#breed2').html('<img onclick="unloadImg(2)" src="'+myOwls[p1][6]+'" class="nft">');
+		breed2=myOwls[p1][7];
+	}
+	if(!$('#breed1').is(':empty')&&!$('#breed2').is(':empty')){
+		$('#breed').prop("disabled",false);
+		await contract.methods.age(parseInt(myOwls[p1][3])+1).call().then(function(data){$('#lblBreed').html('('+data[1]+'/'+data[0]+')');});
+	}
 }
-async function getTokenURI(){
-	$('#status').html(await contract.methods.tokenURI($("#tokenURI").val()).call());
-}
-async function getGenInfo(){
-	await contract.methods.age($("#getGenInfo").val()).call().then(function(result){
-		$('#status').html(result[0]+', '+result[1]+', '+result[2]);
-	});
+async function unloadImg(p1){
+	$('#breed'+p1).empty();
+	$('#lblBreed'+p1).empty();
+	p1==1?breed1=null:breed2=null;
+	$('#breed').prop("disabled",true);
 }
 async function getCurrentAccount(){
 	const accounts=await web3.eth.getAccounts();
@@ -76,7 +81,7 @@ async function MINT(){
 	$('#status').html('Minted');
 }
 async function BREED(){
-	await contract.methods.BREED($("#parent1").val(),$("#parent2").val()).send({from:await getCurrentAccount()});
+	await contract.methods.BREED(breed1,breed2).send({from:await getCurrentAccount()});
 	$('#status').html('Breeded');
 }
 async function load(){
@@ -87,12 +92,10 @@ async function load(){
 	contract=new web3.eth.Contract(
 		[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"approved","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"operator","type":"address"},{"indexed":!1,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"from","type":"address"},{"indexed":!0,"internalType":"address","name":"to","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"AIRDROP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_1","type":"uint256"},{"internalType":"uint256","name":"_2","type":"uint256"}],"name":"BREED","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"DISTRIBUTE","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bool","name":"_b","type":"bool"},{"internalType":"uint256","name":"_x","type":"uint256"},{"internalType":"string","name":"_f","type":"string"},{"internalType":"string","name":"_m","type":"string"}],"name":"GENPREP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"MINT","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"ac","outputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"parent1","type":"uint256"},{"internalType":"uint256","name":"parent2","type":"uint256"},{"internalType":"uint256","name":"time","type":"uint256"},{"internalType":"uint256","name":"gen","type":"uint256"},{"internalType":"uint256","name":"sex","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"age","outputs":[{"internalType":"uint256","name":"maxCount","type":"uint256"},{"internalType":"uint256","name":"currentCount","type":"uint256"},{"internalType":"bool","name":"breedable","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"count","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"getWallet","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bytes","name":"_d","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_p","type":"uint256"}],"name":"setPercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"_t","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"tokens","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 	,'0x0Cad8eEc5675EBD7D02EE92453E843e03F8C2548');
-	await web3.eth.getAccounts(function(err,accts){
-    if(accts.length==0)$('#connect').show();
-    else $('#connect').hide();});
+	await web3.eth.getAccounts(function(err,accts){accts.length==0?$('#connect').show():$('#connect').hide();});
 	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call()+') <i>Network ID: '+await web3.eth.net.getId()+'</i>');
 	$('#balance').append(await contract.methods.getBalance.call().call());
+	await contract.methods.age(1).call().then(function(data){$('#lblMint').html('('+data[1]+'/'+data[0]+')');});
 }
 load();
-
 </script>
