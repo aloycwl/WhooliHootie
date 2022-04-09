@@ -5,6 +5,7 @@
 <style>
 	.nft{cursor:pointer}
 	.boxnft{display:inline-block}
+	.time7week{opacity:0.7}
 </style>
 
 <div id="connect"><a href="#" onclick="getCurrentAccount()">Connect</a><br/></div>
@@ -31,46 +32,64 @@ async function getWallet(){
 	for(let i=0;i<arr.length;i++){
 		myOwls[i]=new Array();
 		await contract.methods.ac(arr[i]).call().then(function(data){
-			myOwls[i][0]=data[1];
-			myOwls[i][1]=data[2];
-			myOwls[i][2]=data[3];
-			myOwls[i][3]=data[4];
-			myOwls[i][4]=data[5];
+			myOwls[i][0]=data[1]; //parent1
+			myOwls[i][1]=data[2]; //parent2
+			myOwls[i][2]=data[3]; //time
+			myOwls[i][3]=data[4]; //gen
+			myOwls[i][4]=data[5]; //sex
 		});
 		//await contract.methods.tokenURI(arr[i]).call(); //tokenURI
 		await $.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(data){
 			myOwls[i][5]=data.name+'#'+arr[i];
 			myOwls[i][6]=data.image;
-			myOwls[i][7]=arr[i];
+			myOwls[i][7]=arr[i]; //token id
 		});
 		$('#status').append(
-			'<p class="boxnft"><b>'+myOwls[i][5]+
-			'</b><br/>Parents ID: '+myOwls[i][0]+' / '+myOwls[i][1]+
+			'<p id="o'+arr[i]+'" class="boxnft"><b>'+myOwls[i][5]+
+			'</b><br/>Parents ID: '+myOwls[i][0]+' + '+myOwls[i][1]+
 			'<br/>Last breeded: '+(myOwls[i][2]>0?moment(moment.unix(myOwls[i][2])).fromNow():'Since forever')+
-			'<br/>Generation: '+myOwls[i][3]+' ('+(myOwls[i][4]==0?'Female':'Male')+')'+
-			'<br/><img id="'+arr[i]+'" onclick="loadImg('+i+')" src="'+myOwls[i][6]+'" class="nft"></p>'
+			'<br/>Generation: '+myOwls[i][3]+' ('+(myOwls[i][4]==0?'Female':'Male')+')<br/>'+
+			(moment.duration(moment().diff(moment(moment.unix(myOwls[i][2])))).asSeconds()>0? //set to 604800 for deployment
+			'<img onclick="loadImg('+i+')" src="'+myOwls[i][6]+'" class="nft">':
+			'<img src="'+myOwls[i][6]+'" class="time7week">')
+			 +'</p>'
 		);
 		//loop and show only available ids
+		
 	}
 }
 async function loadImg(p1){
 	if($('#breed1').is(':empty')){
-		$('#breed1').html('<img onclick="unloadImg(1)" src="'+myOwls[p1][6]+'" class="nft">');
+		$('#breed1').html('<img onclick="unloadImg()" src="'+myOwls[p1][6]+'" class="nft">');
 		breed1=myOwls[p1][7];
+		hideOwls(p1);
 	}else if($('#breed2').is(':empty')){
-		$('#breed2').html('<img onclick="unloadImg(2)" src="'+myOwls[p1][6]+'" class="nft">');
+		$('#breed2').html('<img onclick="unloadImg()" src="'+myOwls[p1][6]+'" class="nft">');
 		breed2=myOwls[p1][7];
-	}
+		hideOwls(p1);
+	}else return;
 	if(!$('#breed1').is(':empty')&&!$('#breed2').is(':empty')){
 		$('#breed').prop("disabled",false);
 		await contract.methods.age(parseInt(myOwls[p1][3])+1).call().then(function(data){$('#lblBreed').html('('+data[1]+'/'+data[0]+')');});
 	}
 }
-async function unloadImg(p1){
-	$('#breed'+p1).empty();
-	$('#lblBreed'+p1).empty();
-	p1==1?breed1=null:breed2=null;
+async function hideOwls(p1){
+	for(let i=0;i<myOwls.length;i++){
+			if(myOwls[i][4]==myOwls[p1][4]||myOwls[i][3]!=myOwls[p1][3]){
+				$('#o'+myOwls[i][7]).hide();
+			}
+		}
+}
+async function unloadImg(){
+	$('#breed1').empty();
+	$('#breed2').empty();
+	$('#lblBreed').empty();
+	breed1=null;
+	breed2=null;
 	$('#breed').prop("disabled",true);
+	for(let i=0;i<myOwls.length;i++){
+			$('#o'+myOwls[i][7]).show();
+		}
 }
 async function getCurrentAccount(){
 	const accounts=await web3.eth.getAccounts();
