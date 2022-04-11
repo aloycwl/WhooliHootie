@@ -100,7 +100,7 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
             }
             tokens[_t].push(_c);
             ac[_c].parent1=0;
-            ac[_c].parent1=1;
+            ac[_c].parent2=0;
             ac[_c].owner=_t;
         }
         emit Transfer(_f,_t,_c);
