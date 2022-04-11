@@ -1,8 +1,3 @@
-/******************************************************************************
-ERC721AC uses generic ERC721 with minimum necessary functions and 
-refactored coding to minimise gas fee and editability.
-Created by Aloysius Chan (AC).
-******************************************************************************/
 pragma solidity ^0.8.13;//SPDX-License-Identifier:None
 interface IERC721{
     event Transfer(address indexed from,address indexed to,uint256 indexed tokenId);
@@ -180,22 +175,3 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
         }
     }
 } 
-/* 
-     UAT Preparation
-     1. test to all 168 gen1 mint + airdrop
-     2. test to all 1680 gen2 breed
-     3. opensea transfer
-     4. private transfer
-     5. test above 168 gen1 (less airdrop)
-     6. test above 1680 breed
-     7. test same sex breed
-     8. test cross gen breed
-     9. test gen2 breed
-     10. test 1 week breed
-     11. test breeded before same owner
-     12. test is owner of parent1 and parent2
-     13. test pause (boolean)
-     14. test breadable (boolean)
-     15. distributable (opensea to admin)
-     16. minting distributable
-  */
