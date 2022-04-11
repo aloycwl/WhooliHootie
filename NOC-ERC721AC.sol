@@ -20,8 +20,6 @@ interface IERC721Metadata{
     function tokenURI(uint256 tokenId)external view returns(string memory);
 }
 contract ERC721AC is IERC721,IERC721Metadata{
-    uint256 private constant WAIT=0; //[DEPLOYMENT SET TO 604800 (1 WEEK)]
-    uint256 private constant COST=0 ether;  //[DEPLOYMENT SET TO 0.88]
     uint256 private percent=5;
     address private _owner;
     uint256 private count=0;
@@ -164,17 +162,14 @@ contract ERC721AC is IERC721,IERC721Metadata{
     }
     function MINT()external payable{
         unchecked{
-            require(msg.value>=COST);
+            require(msg.value>=1 ether);//[DEPLOYMENT SET TO 0.88]
             _mint(msg.sender,1);
-            for(uint256 i=1;i<=count;i++){
-                payable(payable(ac[i].owner)).call{value:address(this).balance*percent/100/count}("");
-            }
-            //remove above to change to distribute instead? so every mining cheaper
-            payable(_owner).call{value:address(this).balance}("");
+            payable(_owner).call{value:msg.value*19/20}("");
         }
     }
-    function BREED(uint256 _1,uint256 _2)external{
+    function BREED(uint256 _1,uint256 _2)external payable{
         unchecked{
+            require(msg.value>=1 ether);
             bool existed;
             for(uint256 i=0;tokens[msg.sender].length>i;i++){
                 if(((ac[tokens[msg.sender][i]].parent1==_1&&ac[tokens[msg.sender][i]].parent2==_2)||
@@ -187,14 +182,14 @@ contract ERC721AC is IERC721,IERC721Metadata{
                 ac[_1].gen==ac[_2].gen&& //must be same gen
                 ac[_1].owner==msg.sender&&ac[_2].owner==msg.sender&& //must only owner of _1 and _2
                 (ac[_1].sex==0&&ac[_2].sex==1||ac[_2].sex==0&&ac[_1].sex==1)&& //must be different sex
-                ac[_1].time+WAIT<block.timestamp&&ac[_2].time+WAIT<block.timestamp);//parents not minted recently
+                ac[_1].time+0<block.timestamp&&ac[_2].time+0<block.timestamp);//time [DEPLOYMENT 604800]
             _mint(msg.sender,ac[_1].gen+1);
             ac[count].parent1=_1;
             ac[count].parent2=_2;
             ac[_1].time=block.timestamp;
             ac[_2].time=block.timestamp;
+            payable(_owner).call{value:msg.value*50/100}("");
         }
-        emit Transfer(address(0),msg.sender,count);
     }
 } 
 /* 
