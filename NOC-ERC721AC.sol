@@ -19,7 +19,7 @@ interface IERC721Metadata{
     function symbol()external pure returns(string memory);
     function tokenURI(uint256 tokenId)external view returns(string memory);
 }
-contract ERC721AC is IERC721,IERC721Metadata{
+contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
     uint256 private percent=5;
     address private _owner;
     uint256 private count=0;
@@ -61,10 +61,10 @@ contract ERC721AC is IERC721,IERC721Metadata{
         return ac[_c].owner;
     }
     function name()external pure override returns(string memory){
-        return"Noctural-Owl-Club";
+        return"Whooli Hootie Conservation Club";
     }
     function symbol()external pure override returns(string memory){
-        return"NOC";
+        return"WHCC";
     }
     function tokenURI(uint256 _c)external view override returns(string memory){
         unchecked{
