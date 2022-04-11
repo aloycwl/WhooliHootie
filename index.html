@@ -3,21 +3,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 
 <style>
-	.nft{cursor:pointer}
+	a,.nft{cursor:pointer}
 	.boxnft{display:inline-block}
 	.nobreed{opacity:0.7}
 	.hide{display:none};
 </style>
 
-<div id="connect" onclick="ethereum.request({method:'eth_requestAccounts'})" class="nft hide">Connect<br/></div>
+<a id="connect" onclick="ethereum.request({method:'eth_requestAccounts'})" class="hide">Connect<br/></a>
 
-<p id="name">Name: </p>
-<p id="balance">Contract Wallet Balance: </p><br/>
+<b><p id="name"></p></b>
 
 <div id="root" class="hide">
-<button onclick="MINT()">MINT</button> <a id="lblMint"></a><br/>
-<div id="breed1" class="boxnft"></div> <div id="breed2" class="boxnft"></div>
-<button id="breed" onclick="BREED()" disabled>BREED</button> <a id="lblBreed"></a><br/>
+<a onclick="MINT()">MINT</a> <a id="lblMint"></a><br/>
+<a id="breed" onclick="BREED()" class="hide">BREED</a> <a id="lblBreed"></a><div id="breed1" class="boxnft"></div> <div id="breed2" class="boxnft"></div>
 
 <p id="myWH"></p><br/>
 </div>
@@ -30,13 +28,7 @@ async function loadMyOwl(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
 	for(let i=0;i<arr.length;i++){
 		myWH[i]=new Array();
-		await contract.methods.ac(arr[i]).call().then(d=>{
-			myWH[i][0]=d[1]; //parent1
-			myWH[i][1]=d[2]; //parent2
-			myWH[i][2]=d[3]; //time
-			myWH[i][3]=d[4]; //gen
-			myWH[i][4]=d[5]; //sex
-		});
+		await contract.methods.ac(arr[i]).call().then(d=>{for(let j=0;j<5;j++)myWH[i][j]=d[j+1];}); //parent1 parent2 time gen sex
 		//await contract.methods.tokenURI(arr[i]).call(); //tokenURI
 		await $.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(d){
 			myWH[i][5]=d.name+'#'+arr[i];
@@ -70,15 +62,8 @@ async function loadImg(p1){
 		hideOwls(p1);
 	}else return;
 	if(!$('#breed1').is(':empty')&&!$('#breed2').is(':empty')){
-		$('#breed').prop("disabled",false);
+		$('#breed').show();
 		await contract.methods.age(parseInt(myWH[p1][3])+1).call().then(d=>{$('#lblBreed').html('('+d[1]+'/'+d[0]+')');});
-	}
-}
-async function hideOwls(p1){
-	for(let i=0;i<myWH.length;i++){
-			if(myWH[i][4]==myWH[p1][4]||myWH[i][3]!=myWH[p1][3])$('#o'+myWH[i][7]).hide();
-			if(myWH[i][0]==myWH[p1][7])$('#o'+myWH[i][1]).hide();
-			if(myWH[i][1]==myWH[p1][7])$('#o'+myWH[i][0]).hide();
 	}
 }
 async function unloadImg(){
@@ -87,8 +72,15 @@ async function unloadImg(){
 	$('#lblBreed').empty();
 	breed1=null;
 	breed2=null;
-	$('#breed').prop("disabled",true);
+	$('#breed').hide();
 	for(let i=0;i<myWH.length;i++)$('#o'+myWH[i][7]).show();
+}
+async function hideOwls(p1){
+	for(let i=0;i<myWH.length;i++){
+			if(myWH[i][4]==myWH[p1][4]||myWH[i][3]!=myWH[p1][3])$('#o'+myWH[i][7]).hide();
+			if(myWH[i][0]==myWH[p1][7])$('#o'+myWH[i][1]).hide();
+			if(myWH[i][1]==myWH[p1][7])$('#o'+myWH[i][0]).hide();
+	}
 }
 async function getCurrentAccount(){
 	const accounts=await web3.eth.getAccounts();
@@ -97,16 +89,16 @@ async function getCurrentAccount(){
 async function MINT(){
 	await contract.methods.MINT().send({
 		from:await getCurrentAccount(),
-		gas:300000,
-		value:0000000000000000000 //1000000000000000000, DEPLOYMENT
+		gas:250000,
+		value:0000000000000000000 //0 880000000000000000, DEPLOYMENT
 	});
 	$('#lblMint').html('Minted');
 }
 async function BREED(){
 	await contract.methods.BREED(breed1,breed2).send({
 		from:await getCurrentAccount(),
-		gas:300000,
-		value:0000000000000000000 //1000000000000000000, DEPLOYMENT
+		gas:400000,
+		value:0000000000000000000 //0020000000000000000, DEPLOYMENT
 	});
 	$('#lblBreed').html('Breeded');
 }
@@ -117,9 +109,9 @@ async function load(){
 	}
 	contract=new web3.eth.Contract(
 		[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"approved","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"operator","type":"address"},{"indexed":!1,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"from","type":"address"},{"indexed":!0,"internalType":"address","name":"to","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"AIRDROP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_1","type":"uint256"},{"internalType":"uint256","name":"_2","type":"uint256"}],"name":"BREED","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"DISTRIBUTE","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bool","name":"_b","type":"bool"},{"internalType":"uint256","name":"_x","type":"uint256"},{"internalType":"string","name":"_f","type":"string"},{"internalType":"string","name":"_m","type":"string"}],"name":"GENPREP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"MINT","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"ac","outputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"parent1","type":"uint256"},{"internalType":"uint256","name":"parent2","type":"uint256"},{"internalType":"uint256","name":"time","type":"uint256"},{"internalType":"uint256","name":"gen","type":"uint256"},{"internalType":"uint256","name":"sex","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"age","outputs":[{"internalType":"uint256","name":"maxCount","type":"uint256"},{"internalType":"uint256","name":"currentCount","type":"uint256"},{"internalType":"bool","name":"breedable","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"count","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"getWallet","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bytes","name":"_d","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_p","type":"uint256"}],"name":"setPercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"_t","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"tokens","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"}]
-	,'0x0Cad8eEc5675EBD7D02EE92453E843e03F8C2548');
-	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call());
-	$('#balance').append(await contract.methods.getBalance.call().call());
+		,'0x0Cad8eEc5675EBD7D02EE92453E843e03F8C2548');
+	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call()+') '+
+		await contract.methods.getBalance.call().call()+' balance');
 	await contract.methods.age(1).call().then(d=>{$('#lblMint').html('('+d[1]+'/'+d[0]+')');});
 }
 var loaded=false;
