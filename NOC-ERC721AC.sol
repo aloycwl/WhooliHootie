@@ -81,8 +81,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
                 buffer[digits]=bytes1(uint8(48+uint256(_c%10)));
                 temp/=10;
             }
-            return string(abi.encodePacked(age[ac[_c].gen].baseURI[ac[_c].sex],_c>0?string(buffer):"0",".json"));
-            
+            return string(abi.encodePacked(age[ac[_c].gen].baseURI[ac[_c].sex],_c>0?string(buffer):"0",".json")); 
         }
     }
     function safeTransferFrom(address _f,address _t,uint256 _c)external override{
@@ -125,23 +124,10 @@ contract ERC721AC is IERC721,IERC721Metadata{
         age[_c].baseURI[0]=_f;
         age[_c].baseURI[1]=_m;
     }
-    function DISTRIBUTE(address _a1,address _a2,address _a3,address _a4,address _a5,
-        address _a6,address _a7,address _a8,address _a9,address _a10)external onlyOwner{
+    function DISTRIBUTE()external onlyOwner{
         unchecked{
-            uint256 _2percent=address(this).balance*4/9;
-            payable(payable(_a1)).call{value:_2percent*3/10}("");
-            payable(payable(_a2)).call{value:_2percent*2/10}("");
-            payable(payable(_a3)).call{value:_2percent*1/10}("");
-            payable(payable(_a4)).call{value:_2percent*1/10}("");
-            payable(payable(_a5)).call{value:_2percent*1/10}("");
-            payable(payable(_a6)).call{value:_2percent*1/20}("");
-            payable(payable(_a7)).call{value:_2percent*1/20}("");
-            payable(payable(_a8)).call{value:_2percent*1/20}("");
-            payable(payable(_a9)).call{value:_2percent*1/50}("");
-            payable(payable(_a10)).call{value:_2percent*1/50}("");
             for(uint256 i=1;i<=count;i++){
                 payable(payable(ac[i].owner)).call{value:address(this).balance/count}("");
-
             }
         }
     }
@@ -162,14 +148,14 @@ contract ERC721AC is IERC721,IERC721Metadata{
     }
     function MINT()external payable{
         unchecked{
-            require(msg.value>=1 ether);//[DEPLOYMENT SET TO 0.88]
+            require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.88]
             _mint(msg.sender,1);
             payable(_owner).call{value:msg.value*19/20}(""); //pay admin 95%
         }
     }
     function BREED(uint256 _1,uint256 _2)external payable{
         unchecked{
-            require(msg.value>=1 ether);
+            require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.02]
             bool existed;
             for(uint256 i=0;tokens[msg.sender].length>i;i++){
                 if(((ac[tokens[msg.sender][i]].parent1==_1&&ac[tokens[msg.sender][i]].parent2==_2)||
