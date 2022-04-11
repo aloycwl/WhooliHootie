@@ -137,7 +137,7 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
             count++;
             age[_g].currentCount++;
             ac[count].owner=_a;
-            ac[count].sex=uint256(keccak256(abi.encodePacked(block.timestamp)))%10>(_g==1?4:8)?0:1;
+            ac[count].sex=uint256(keccak256(abi.encodePacked(block.timestamp)))%10>(_g==1?4:7)?0:1;
             ac[count].gen=_g;
             tokens[_a].push(count);
         }

@@ -19,40 +19,40 @@
 <div id="breed1" class="boxnft"></div> <div id="breed2" class="boxnft"></div>
 <button id="breed" onclick="BREED()" disabled>BREED</button> <a id="lblBreed"></a><br/>
 
-<p id="myOwls"></p><br/>
+<p id="myWH"></p><br/>
 </div>
 
 <script type="text/javascript">
-var myOwls=new Array();
+var myWH=new Array();
 var breed1,breed2;
 
 async function loadMyOwl(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
 	for(let i=0;i<arr.length;i++){
-		myOwls[i]=new Array();
+		myWH[i]=new Array();
 		await contract.methods.ac(arr[i]).call().then(d=>{
-			myOwls[i][0]=d[1]; //parent1
-			myOwls[i][1]=d[2]; //parent2
-			myOwls[i][2]=d[3]; //time
-			myOwls[i][3]=d[4]; //gen
-			myOwls[i][4]=d[5]; //sex
+			myWH[i][0]=d[1]; //parent1
+			myWH[i][1]=d[2]; //parent2
+			myWH[i][2]=d[3]; //time
+			myWH[i][3]=d[4]; //gen
+			myWH[i][4]=d[5]; //sex
 		});
 		//await contract.methods.tokenURI(arr[i]).call(); //tokenURI
 		await $.getJSON('https://raw.githubusercontent.com/aloycwl/erctest/main/1.json',function(d){
-			myOwls[i][5]=d.name+'#'+arr[i];
-			myOwls[i][6]=d.image;
-			myOwls[i][7]=arr[i]; //token id
+			myWH[i][5]=d.name+'#'+arr[i];
+			myWH[i][6]=d.image;
+			myWH[i][7]=arr[i]; //token id
 		});
 		var breedable;
-		await contract.methods.age(parseInt(myOwls[i][3])+1).call().then(d=>{breedable=d[2];})
-		$('#myOwls').append(
-			'<p id="o'+arr[i]+'" class="boxnft"><b>'+myOwls[i][5]+
-			'</b><br/>Parents ID: '+myOwls[i][0]+' + '+myOwls[i][1]+
-			'<br/>Last breeded: '+(myOwls[i][2]>0?moment(moment.unix(myOwls[i][2])).fromNow():'Since forever')+
-			'<br/>Generation: '+myOwls[i][3]+' ('+(myOwls[i][4]==0?'Female':'Male')+')<br/><img src="'+
-			(moment.duration(moment().diff(moment(moment.unix(myOwls[i][2])))).asSeconds()>/*60480*/0&&breedable==true?
-				myOwls[i][6]+'" onclick="loadImg('+i+')" class="nft':
-				myOwls[i][6]+'" class="nobreed')
+		await contract.methods.age(parseInt(myWH[i][3])+1).call().then(d=>{breedable=d[2];})
+		$('#myWH').append(
+			'<p id="o'+arr[i]+'" class="boxnft"><b>'+myWH[i][5]+
+			'</b><br/>Parents ID: '+myWH[i][0]+' + '+myWH[i][1]+
+			'<br/>Last breeded: '+(myWH[i][2]>0?moment(moment.unix(myWH[i][2])).fromNow():'Since forever')+
+			'<br/>Generation: '+myWH[i][3]+' ('+(myWH[i][4]==0?'Female':'Male')+')<br/><img src="'+
+			(moment.duration(moment().diff(moment(moment.unix(myWH[i][2])))).asSeconds()>/*60480*/0&&breedable==true?
+				myWH[i][6]+'" onclick="loadImg('+i+')" class="nft':
+				myWH[i][6]+'" class="nobreed')
 			 +'"></p>'
 		);
 	}
@@ -61,24 +61,24 @@ async function loadImg(p1){
 	var s1='<img onclick="unloadImg()" src="';
 	var s2='" class="nft">';
 	if($('#breed1').is(':empty')){
-		$('#breed1').html(s1+myOwls[p1][6]+s2);
-		breed1=myOwls[p1][7];
+		$('#breed1').html(s1+myWH[p1][6]+s2);
+		breed1=myWH[p1][7];
 		hideOwls(p1);
 	}else if($('#breed2').is(':empty')){
-		$('#breed2').html(s1+myOwls[p1][6]+s2);
-		breed2=myOwls[p1][7];
+		$('#breed2').html(s1+myWH[p1][6]+s2);
+		breed2=myWH[p1][7];
 		hideOwls(p1);
 	}else return;
 	if(!$('#breed1').is(':empty')&&!$('#breed2').is(':empty')){
 		$('#breed').prop("disabled",false);
-		await contract.methods.age(parseInt(myOwls[p1][3])+1).call().then(d=>{$('#lblBreed').html('('+d[1]+'/'+d[0]+')');});
+		await contract.methods.age(parseInt(myWH[p1][3])+1).call().then(d=>{$('#lblBreed').html('('+d[1]+'/'+d[0]+')');});
 	}
 }
 async function hideOwls(p1){
-	for(let i=0;i<myOwls.length;i++){
-			if(myOwls[i][4]==myOwls[p1][4]||myOwls[i][3]!=myOwls[p1][3])$('#o'+myOwls[i][7]).hide();
-			if(myOwls[i][0]==myOwls[p1][7])$('#o'+myOwls[i][1]).hide();
-			if(myOwls[i][1]==myOwls[p1][7])$('#o'+myOwls[i][0]).hide();
+	for(let i=0;i<myWH.length;i++){
+			if(myWH[i][4]==myWH[p1][4]||myWH[i][3]!=myWH[p1][3])$('#o'+myWH[i][7]).hide();
+			if(myWH[i][0]==myWH[p1][7])$('#o'+myWH[i][1]).hide();
+			if(myWH[i][1]==myWH[p1][7])$('#o'+myWH[i][0]).hide();
 	}
 }
 async function unloadImg(){
@@ -88,7 +88,7 @@ async function unloadImg(){
 	breed1=null;
 	breed2=null;
 	$('#breed').prop("disabled",true);
-	for(let i=0;i<myOwls.length;i++)$('#o'+myOwls[i][7]).show();
+	for(let i=0;i<myWH.length;i++)$('#o'+myWH[i][7]).show();
 }
 async function getCurrentAccount(){
 	const accounts=await web3.eth.getAccounts();
@@ -118,16 +118,20 @@ async function load(){
 	contract=new web3.eth.Contract(
 		[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"approved","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"owner","type":"address"},{"indexed":!0,"internalType":"address","name":"operator","type":"address"},{"indexed":!1,"internalType":"bool","name":"approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":!1,"inputs":[{"indexed":!0,"internalType":"address","name":"from","type":"address"},{"indexed":!0,"internalType":"address","name":"to","type":"address"},{"indexed":!0,"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"AIRDROP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_1","type":"uint256"},{"internalType":"uint256","name":"_2","type":"uint256"}],"name":"BREED","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"DISTRIBUTE","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bool","name":"_b","type":"bool"},{"internalType":"uint256","name":"_x","type":"uint256"},{"internalType":"string","name":"_f","type":"string"},{"internalType":"string","name":"_m","type":"string"}],"name":"GENPREP","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"MINT","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"ac","outputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"parent1","type":"uint256"},{"internalType":"uint256","name":"parent2","type":"uint256"},{"internalType":"uint256","name":"time","type":"uint256"},{"internalType":"uint256","name":"gen","type":"uint256"},{"internalType":"uint256","name":"sex","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"age","outputs":[{"internalType":"uint256","name":"maxCount","type":"uint256"},{"internalType":"uint256","name":"currentCount","type":"uint256"},{"internalType":"bool","name":"breedable","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"count","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_a","type":"address"}],"name":"getWallet","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"},{"internalType":"bytes","name":"_d","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_p","type":"uint256"}],"name":"setPercent","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"_t","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"tokens","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_f","type":"address"},{"internalType":"address","name":"_t","type":"address"},{"internalType":"uint256","name":"_c","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 	,'0x0Cad8eEc5675EBD7D02EE92453E843e03F8C2548');
-	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call()+') <i>Network ID: '+await web3.eth.net.getId()+'</i>');
+	$('#name').append(await contract.methods.name.call().call()+' ('+await contract.methods.symbol.call().call());
 	$('#balance').append(await contract.methods.getBalance.call().call());
 	await contract.methods.age(1).call().then(d=>{$('#lblMint').html('('+d[1]+'/'+d[0]+')');});
 }
+var loaded=false;
 async function isWeb3(){
   await web3.eth.getAccounts().then(r=>{
     if(r.length>0){ 
 			$('#connect').hide();
 			$('#root').show();
-			if($('#myOwls').is(':empty'))loadMyOwl();
+			if($('#myWH').is(':empty')&&loaded==false){
+				loadMyOwl();
+				loaded=true;
+			}
     }else{
 			$('#connect').show();
 			$('#root').hide();
