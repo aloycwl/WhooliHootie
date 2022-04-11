@@ -164,7 +164,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
         unchecked{
             require(msg.value>=1 ether);//[DEPLOYMENT SET TO 0.88]
             _mint(msg.sender,1);
-            payable(_owner).call{value:msg.value*19/20}("");
+            payable(_owner).call{value:msg.value*19/20}(""); //pay admin 95%
         }
     }
     function BREED(uint256 _1,uint256 _2)external payable{
@@ -188,7 +188,7 @@ contract ERC721AC is IERC721,IERC721Metadata{
             ac[count].parent2=_2;
             ac[_1].time=block.timestamp;
             ac[_2].time=block.timestamp;
-            payable(_owner).call{value:msg.value*50/100}("");
+            payable(_owner).call{value:msg.value/5}(""); //pay admin 20%
         }
     }
 } 
