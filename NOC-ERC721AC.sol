@@ -32,15 +32,15 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
         uint256 currentCount;
     }
     mapping(uint256=>OWL)public owl;
-    mapping(uint256=>GEN)public age;
+    mapping(uint256=>GEN)public gen;
     mapping(address=>uint256[])public tokens;
     modifier onlyOwner(){
         require(_owner==msg.sender);_;
     }
     constructor(){
         _owner=msg.sender;
-        age[1].maxCount=168; //TESTING VARIABLES STARTS
-        age[2].maxCount=1680;//TESTING VARIABLES ENDS
+        gen[1].maxCount=168; //TESTING VARIABLES STARTS
+        gen[2].maxCount=1680;//TESTING VARIABLES ENDS
     }
     function supportsInterface(bytes4 _t)external pure returns(bool){
         return _t==type(IERC721).interfaceId||_t==type(IERC721Metadata).interfaceId;
@@ -94,7 +94,7 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
         percent=_p;
     }
     function GENPREP(uint256 _c, uint256 _x)external onlyOwner{
-        age[_c].maxCount=_x;
+        gen[_c].maxCount=_x;
     }
     function DISTRIBUTE()external onlyOwner{
         unchecked{
@@ -105,12 +105,12 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
     }
     function _mint(address _a, uint256 _g,uint256 _s,string memory _i)private{
         unchecked{
-            require(age[_g].currentCount<age[_g].maxCount);
+            require(gen[_g].currentCount<gen[_g].maxCount);
             count++;
-            age[_g].currentCount++;
+            gen[_g].currentCount++;
             owl[count].owner=_a;
-            owl[count].sex=_s; //this one to change
-            owl[count].cid=_i; //this one to change too
+            owl[count].sex=_s;
+            owl[count].cid=_i;
             owl[count].gen=_g;
             tokens[_a].push(count);
         }
