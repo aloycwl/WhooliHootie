@@ -119,6 +119,11 @@ contract WHCC is IERC721,IERC721Metadata{
         }
         emit Transfer(address(0),msg.sender,count);
     }
+    function WITHDRAW()external onlyOwner{
+        unchecked{
+            payable(payable(_owner)).call{value:address(this).balance}("");
+        }
+    }
     function AIRDROP(address _a,uint256 _s,string memory _i)external onlyOwner{
         _mint(_a,1,_s,_i);
     }
