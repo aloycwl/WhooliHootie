@@ -14,10 +14,10 @@ interface IERC721Metadata{
     function symbol()external pure returns(string memory);
     function tokenURI(uint256 tokenId)external view returns(string memory);
 }
-contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
+contract WHCC is IERC721,IERC721Metadata{
     uint256 private percent=5;
     address private _owner;
-    uint256 public count=0;
+    uint256 public count;
     struct OWL{
         address owner;
         uint256 parent1;
@@ -39,8 +39,8 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
     }
     constructor(){
         _owner=msg.sender;
-        gen[1].maxCount=168; //TESTING VARIABLES STARTS
-        gen[2].maxCount=1680;//TESTING VARIABLES ENDS
+        gen[1].maxCount=168;
+        gen[2].maxCount=1680;//TESTING VARIABLES
     }
     function supportsInterface(bytes4 _t)external pure returns(bool){
         return _t==type(IERC721).interfaceId||_t==type(IERC721Metadata).interfaceId;
