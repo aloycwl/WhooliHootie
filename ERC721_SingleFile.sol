@@ -113,19 +113,6 @@ library Address{
 interface IERC165{
     function supportsInterface(bytes4 interfaceId)external view returns(bool);
 }
-abstract contract Context{
-    function _msgSender()internal view virtual returns(address){
-        return msg.sender;
-    }
-    function _msgData()internal view virtual returns(bytes calldata){
-        return msg.data;
-    }
-}
-abstract contract ERC165 is IERC165{
-    function supportsInterface(bytes4 interfaceId)public view virtual override returns(bool){
-        return interfaceId==type(IERC165).interfaceId;
-    }
-}
 interface IERC721 is IERC165{
     event Transfer(address indexed from,address indexed to,uint256 indexed tokenId);
     event Approval(address indexed owner,address indexed approved,uint256 indexed tokenId);
@@ -147,6 +134,45 @@ interface IERC721Metadata is IERC721{
 }
 interface IERC721Receiver{
     function onERC721Received(address operator,address from,uint256 tokenId,bytes calldata data)external returns(bytes4);
+}
+abstract contract Context{
+    function _msgSender()internal view virtual returns(address){
+        return msg.sender;
+    }
+    function _msgData()internal view virtual returns(bytes calldata){
+        return msg.data;
+    }
+}
+abstract contract ERC165 is IERC165{
+    function supportsInterface(bytes4 interfaceId)public view virtual override returns(bool){
+        return interfaceId==type(IERC165).interfaceId;
+    }
+}
+abstract contract Ownable{
+    address private _owner;
+    event OwnershipTransferred(address indexed previousOwner,address indexed newOwner);
+    constructor(){
+        _transferOwnership(msg.sender);
+    }
+    function owner()public view virtual returns (address){
+        return _owner;
+    }
+    modifier onlyOwner(){
+        require(owner()==msg.sender,"Ownable: caller is not the owner");
+        _;
+    }
+    function renounceOwnership()public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+    function transferOwnership(address newOwner)public virtual onlyOwner {
+        require(newOwner!=address(0),"Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+    function _transferOwnership(address newOwner)internal virtual {
+        address oldOwner=_owner;
+        _owner=newOwner;
+        emit OwnershipTransferred(oldOwner,newOwner);
+    }
 }
 contract ERC721 is Context,ERC165,IERC721,IERC721Metadata{
     using Address for address;

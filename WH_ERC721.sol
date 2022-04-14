@@ -2,9 +2,8 @@ pragma solidity ^0.8.7;//SPDX-License-Identifier:None
 
 import "ERC721_SingleFile.sol";
 
-contract WHOOLIHOOTIE is ERC721{
+contract WHOOLIHOOTIE is ERC721,Ownable{
     uint256 private percent=5;
-    address private _owner;
     uint256 public count=0;
     struct OWL{
         address owner;
@@ -22,11 +21,7 @@ contract WHOOLIHOOTIE is ERC721{
     mapping(uint256=>OWL)public owl;
     mapping(uint256=>GEN)public gen;
     mapping(address=>uint256[])public tokens;
-    modifier onlyOwner(){
-        require(_owner==msg.sender);_;
-    }
     constructor(string memory name,string memory symbol) ERC721(name, symbol) {
-        _owner=msg.sender;
         name="Whooli Hootie Conservation Club";
         symbol="WHCC";
         gen[1].maxCount=168;
@@ -93,7 +88,7 @@ contract WHOOLIHOOTIE is ERC721{
         unchecked{
             require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.88]
             _mint(msg.sender,1,_s,_i);
-            (bool _z,)=payable(_owner).call{value:msg.value*19/20}(""); //pay admin 95%
+            (bool _z,)=payable(owner()).call{value:msg.value*19/20}(""); //pay admin 95%
             require(_z);
         }
     }
@@ -118,7 +113,7 @@ contract WHOOLIHOOTIE is ERC721{
             owl[count].parent2=_2;
             owl[_1].time=block.timestamp;
             owl[_2].time=block.timestamp;
-            (bool _z,)=payable(_owner).call{value:msg.value/5}(""); //pay admin 20%
+            (bool _z,)=payable(owner()).call{value:msg.value/5}(""); //pay admin 20%
             require(_z);
         }
     }
