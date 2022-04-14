@@ -22,8 +22,6 @@ contract WHOOLIHOOTIE is ERC721,Ownable{
     mapping(uint256=>GEN)public gen;
     mapping(address=>uint256[])public tokens;
     constructor(string memory name,string memory symbol) ERC721(name, symbol) {
-        name="Whooli Hootie Conservation Club";
-        symbol="WHCC";
         gen[1].maxCount=168;
         gen[2].maxCount=1680;//TESTING VARIABLES
     }

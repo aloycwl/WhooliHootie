@@ -48,6 +48,9 @@ contract WHOOLIHOOTIEERC721AC is IERC721,IERC721Metadata{
     function ownerOf(uint256 _c)external view returns(address){
         return owl[_c].owner;
     }
+    function owner()external view returns(address){
+        return _owner;
+    }
     function name()external pure override returns(string memory){
         return"Whooli Hootie Conservation Club";
     }
