@@ -1,6 +1,6 @@
 var myWH=new Array();
 var breed1,breed2,gen,sex,cid,count; //count need to add 1 when minting
-const ipfs=IpfsApi({host:'ipfs.infura.io',port:5001,protocol:'https'})
+const ipfs=IpfsApi({host:'ipfs.infura.io',port:5001,protocol:'https'});
 
 async function loadMyOwl(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
