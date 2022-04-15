@@ -26,7 +26,7 @@ async function loadMyOwl(){
 		);
 	}
 }
-async function loadImg(p1){
+async function loadImg(p1){ //add for breeding, hide the rest of it 
 	const s1='<img onclick="unloadImg()" src="'+myWH[p1][7]+'" class="nft">';
 	if($('#breed1').is(':empty')){
 		$('#breed1').html(s1);
@@ -43,14 +43,14 @@ async function loadImg(p1){
 		gen=parseInt(myWH[p1][3])+1;
 	}
 }
-async function hideOwls(p1){
+async function hideOwls(p1){ //breeding hide function
 	for(let i=0;i<myWH.length;i++){
 			if(myWH[i][4]==myWH[p1][4]||myWH[i][3]!=myWH[p1][3])$('#o'+myWH[i][8]).hide();
 			if(myWH[i][0]==myWH[p1][8])$('#o'+myWH[i][1]).hide();
 			if(myWH[i][1]==myWH[p1][8])$('#o'+myWH[i][0]).hide();
 	}
 }
-async function unloadImg(){
+async function unloadImg(){ //reset to select others for breeding
 	$('#breed1').empty();
 	$('#breed2').empty();
 	$('#lblBreed').empty();
@@ -63,7 +63,7 @@ async function getCurrentAccount(){
 	const accounts=await web3.eth.getAccounts();
 	return accounts[0];
 }
-async function getCID(){
+async function getCID(){ //to input into minting
 	sex=Math.floor(Math.random()*2);
 	var img;
 	await $.getJSON('https://aloycwl.github.io/WhooliHootie/img.json',function(d){img=d.g[gen].s[sex]});
@@ -108,7 +108,7 @@ async function load(){
 		web3=new Web3(ethereum);
 		await window.ethereum.request({method: 'eth_requestAccounts'});
 	}
-	if(await web3.eth.net.getId()!=4){ //DEPLOYMENT change to 1 as mainnet
+	if(await web3.eth.net.getId()!=4){ //DEPLOYMENT change this and the one below to 1 as mainnet
 		await ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x4'}]});
 		location.reload();
 	}else{
@@ -121,7 +121,7 @@ async function load(){
 	}
 }
 var loaded=false;
-async function isWeb3(){
+async function isWeb3(){ //to check if metamask is connected or disconnnected
   await web3.eth.getAccounts().then(r=>{
     if(r.length>0){ 
 			$('#connect').hide();
