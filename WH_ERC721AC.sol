@@ -64,6 +64,7 @@ contract WHCC is IERC721,IERC721Metadata{
         transferFrom(_f,_t,_c);
     }
     function safeTransferFrom(address _f,address _t,uint256 _c,bytes memory _d)external override{
+        require(keccak256(abi.encodePacked(_d))==keccak256(abi.encodePacked(_d))); //to dismiss warning (+gasfee)
         transferFrom(_f,_t,_c);
     }
     function transferFrom(address _f,address _t,uint256 _c)public override{
@@ -85,6 +86,7 @@ contract WHCC is IERC721,IERC721Metadata{
         emit Approval(owl[_c].owner,_t,_c);
     }
     function getApproved(uint256 _c)external view override returns(address){
+        require(_c==_c); //to dismiss warning (+gasfee)
         return msg.sender;
     }
     function getWallet(address _a)external view returns(uint256[]memory){
@@ -99,11 +101,13 @@ contract WHCC is IERC721,IERC721Metadata{
     function GENPREP(uint256 _c, uint256 _x)external onlyOwner{
         gen[_c].maxCount=_x;
     }
-    function DISTRIBUTE()external onlyOwner{
+    function DISTRIBUTE()external{
         unchecked{
+            bool _s;
             for(uint256 i=1;i<=count;i++){
-                payable(payable(owl[i].owner)).call{value:address(this).balance/count}("");
+                (_s,)=payable(payable(owl[i].owner)).call{value:address(this).balance/count}("");
             }
+            require(_s);
         }
     }
     function _mint(address _a, uint256 _g,uint256 _s,string memory _i)private{
@@ -119,9 +123,10 @@ contract WHCC is IERC721,IERC721Metadata{
         }
         emit Transfer(address(0),msg.sender,count);
     }
-    function WITHDRAW()external onlyOwner{
+    function WITHDRAW(uint256 _p)external onlyOwner{
         unchecked{
-            payable(payable(_owner)).call{value:address(this).balance}("");
+            (bool _s,)=payable(payable(_owner)).call{value:address(this).balance/_p*100}("");
+            require(_s);
         }
     }
     function AIRDROP(address _a,uint256 _s,string memory _i)external onlyOwner{
@@ -131,7 +136,6 @@ contract WHCC is IERC721,IERC721Metadata{
         unchecked{
             require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.88]
             _mint(msg.sender,1,_s,_i);
-            payable(_owner).call{value:msg.value*19/20}(""); //pay admin 95%
         }
     }
     function BREED(uint256 _1,uint256 _2,uint256 _s,string memory _i)external payable{
@@ -155,7 +159,6 @@ contract WHCC is IERC721,IERC721Metadata{
             owl[count].parent2=_2;
             owl[_1].time=block.timestamp;
             owl[_2].time=block.timestamp;
-            payable(_owner).call{value:msg.value/5}(""); //pay admin 20%
         }
     }
 } 

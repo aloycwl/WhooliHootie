@@ -1,6 +1,6 @@
 pragma solidity ^0.8.7;//SPDX-License-Identifier:None
 
-import "ERC721_SingleFile.sol";
+import "WH_attachment.sol";
 
 contract WHOOLIHOOTIE is ERC721,Ownable{
     uint256 private percent=5;
