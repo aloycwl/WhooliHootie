@@ -1,4 +1,4 @@
-pragma solidity ^0.8.13;//SPDX-License-Identifier:None
+pragma solidity^0.8.13;//SPDX-License-Identifier:None
 interface IERC721{
     event Transfer(address indexed from,address indexed to,uint256 indexed tokenId);
     event Approval(address indexed owner,address indexed approved,uint256 indexed tokenId);
