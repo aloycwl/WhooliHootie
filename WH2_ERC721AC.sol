@@ -122,26 +122,26 @@ contract ERC721AC is IERC721,IERC721Metadata{
         }
         require(s);
     }}
-    function _mint(address _a, uint256 _g,uint256 s,string memory _i)private{unchecked{
-        require(gen[_g].currentCount<gen[_g].maxCount);
+    function _mint(address a, uint256 g,uint256 s,string memory r)private{unchecked{
+        require(gen[g].currentCount<gen[g].maxCount);
         count++;
-        gen[_g].currentCount++;
-        owl[count].owner=_a;
+        gen[g].currentCount++;
+        owl[count].owner=a;
         owl[count].sex=s;
-        owl[count].cid=_i;
-        owl[count].gen=_g;
-        tokens[_a].push(count);
+        owl[count].cid=r;
+        owl[count].gen=g;
+        tokens[a].push(count);
         emit Transfer(address(0),msg.sender,count);
     }}
     function AIRDROP(address a,uint256 s,string memory r)external onlyOwner{
         _mint(a,1,s,r);
     }
     function MINT(uint256 s,string memory r)external payable{unchecked{
-        require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.88]
+        require(msg.value>=0.00 ether); /***[DEPLOYMENT SET TO 0.88]***/
         _mint(msg.sender,1,s,r);
     }}
     function BREED(uint256 p,uint256 q,uint256 s,string memory r)external payable{unchecked{
-        require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.02]
+        require(msg.value>=0.00 ether); /***[DEPLOYMENT SET TO 0.02]***/
         bool existed;
         for(uint256 i=0;tokens[msg.sender].length>i;i++){
             if(((owl[tokens[msg.sender][i]].parent1==p&&owl[tokens[msg.sender][i]].parent2==q)||
