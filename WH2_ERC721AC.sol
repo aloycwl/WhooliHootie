@@ -20,11 +20,8 @@ interface IERC721Metadata{
 }
 contract ERC721AC is IERC721,IERC721Metadata{
     address private _owner;
-    mapping(uint256=>address)private _owners;
-    mapping(address=>uint256)private _balances;
     mapping(uint256=>address)private _tokenApprovals;
     mapping(address=>mapping(address=>bool))private _operatorApprovals;
-
     uint256 public count;
     struct OWL{
         address owner;
@@ -42,7 +39,6 @@ contract ERC721AC is IERC721,IERC721Metadata{
     mapping(uint256=>OWL)public owl;
     mapping(uint256=>GEN)public gen;
     mapping(address=>uint256[])public tokens;
-
     modifier onlyOwner(){
         require(_owner==msg.sender);_;
     }
@@ -55,23 +51,22 @@ contract ERC721AC is IERC721,IERC721Metadata{
         return f==type(IERC721).interfaceId||f==type(IERC721Metadata).interfaceId;
     }
     function balanceOf(address o)external view override returns(uint256){
-        return _balances[o];
+        return tokens[o].length;
     }
     function ownerOf(uint256 k)public view override returns(address){
-        return owl[k].owner;;
+        return owl[k].owner;
     }
     function owner()external view returns(address){
         return _owner;
     }
     function name()external pure override returns(string memory){
-        return "TESTING 4";
+        return"Whooli Hootie Conservation Club";
     }
     function symbol()external pure override returns(string memory){
-        return "TS4";
+        return"WHCC";
     }
-    function tokenURI(uint256 k)external pure override returns(string memory){
-        require(k==k);
-        return"";
+    function tokenURI(uint256 k)external view override returns(string memory){
+        return string(abi.encodePacked("ipfs://",owl[k].cid));
     }
     function approve(address t,uint256 k)external override{
         require(msg.sender==ownerOf(k)||isApprovedForAll(ownerOf(k),msg.sender));
@@ -92,9 +87,15 @@ contract ERC721AC is IERC721,IERC721Metadata{
         require(f==ownerOf(k)||getApproved(k)==f||isApprovedForAll(ownerOf(k),f));
         _tokenApprovals[k]=address(0);
         emit Approval(ownerOf(k),t,k);
-        _balances[f]-=1;
-        _balances[t]+=1;
-        _owners[k]=t;
+        for(uint256 i=0;i<tokens[f].length;i++)if(tokens[f][i]==k){
+            tokens[f][i]=tokens[f][tokens[f].length-1];
+            tokens[f].pop();
+            break;
+        }
+        tokens[t].push(k);
+        owl[k].parent1=0;
+        owl[k].parent2=0;
+        owl[k].owner=t;
         emit Transfer(f,t,k);
     }}
     function safeTransferFrom(address f,address t,uint256 k)external override{
@@ -104,112 +105,60 @@ contract ERC721AC is IERC721,IERC721Metadata{
         d=d;
         transferFrom(f,t,k);
     }
-    function MINT(address to,uint256 tokenId)public{unchecked{
-        _balances[to]+=1;
-        _owners[tokenId]=to;
-        emit Transfer(address(0),to,tokenId);
-    }}
-}
-contract WhootiHootieERC721AC is ERC721AC{
-    
-
-    function ownerOf(uint256 _c)external view returns(address){
-        return owl[_c].owner;
-    }
-    function owner()external view returns(address){
-        return _owner;
-    }
-    function name()external pure override returns(string memory){
-        return"Whooli Hootie Conservation Club";
-    }
-    function symbol()external pure override returns(string memory){
-        return"WHCC";
-    }
-    function tokenURI(uint256 _c)external view override returns(string memory){
-        return string(abi.encodePacked("ipfs://",owl[_c].cid)); 
-    }
-    function safeTransferFrom(address _f,address _t,uint256 _c)external override{
-        transferFrom(_f,_t,_c);
-    }
-    function safeTransferFrom(address _f,address _t,uint256 _c,bytes memory _d)external override{
-        require(keccak256(abi.encodePacked(_d))==keccak256(abi.encodePacked(_d))); //to dismiss warning (+gasfee)
-        transferFrom(_f,_t,_c);
-    }
-    function transferFrom(address _f,address _t,uint256 _c)public override{unchecked{
-        require(owl[_c].owner==_f);
-        for(uint256 i=0;i<tokens[_f].length;i++)if(tokens[_f][i]==_c){
-            tokens[_f][i]=tokens[_f][tokens[_f].length-1];
-            tokens[_f].pop();
-            break;
-        }
-        tokens[_t].push(_c);
-        owl[_c].parent1=0;
-        owl[_c].parent2=0;
-        owl[_c].owner=_t;
-        emit Transfer(_f,_t,_c);
-    }}
-    function approve(address _t,uint256 _c)external override{
-        emit Approval(owl[_c].owner,_t,_c);
-    }
-    function getApproved(uint256 _c)external view override returns(address){
-        require(_c==_c); //to dismiss warning (+gasfee)
-        return msg.sender;
-    }
-    function getWallet(address _a)external view returns(uint256[]memory){
-        return tokens[_a];
+    function getWallet(address a)external view returns(uint256[]memory){
+        return tokens[a];
     }
     function getBalance()external view returns(uint256){
         return address(this).balance;
     }
-    function GENPREP(uint256 _c, uint256 _x)external onlyOwner{
-        gen[_c].maxCount=_x;
+    function GENPREP(uint256 k, uint256 m)external onlyOwner{
+        gen[k].maxCount=m;
     }
     function DISTRIBUTE()external{unchecked{
-        bool _s;
-        (_s,)=payable(payable(_owner)).call{value:address(this).balance/gen[1].currentCount<168?95:5*100}("");
+        bool s;
+        (s,)=payable(payable(_owner)).call{value:address(this).balance/gen[1].currentCount<168?95:5*100}("");
         for(uint256 i=1;i<=count;i++){
-            (_s,)=payable(payable(owl[i].owner)).call{value:address(this).balance/count}("");
+            (s,)=payable(payable(owl[i].owner)).call{value:address(this).balance/count}("");
         }
-        require(_s);
-        
+        require(s);
     }}
-    function _mint(address _a, uint256 _g,uint256 _s,string memory _i)private{unchecked{
+    function _mint(address _a, uint256 _g,uint256 s,string memory _i)private{unchecked{
         require(gen[_g].currentCount<gen[_g].maxCount);
         count++;
         gen[_g].currentCount++;
         owl[count].owner=_a;
-        owl[count].sex=_s;
+        owl[count].sex=s;
         owl[count].cid=_i;
         owl[count].gen=_g;
         tokens[_a].push(count);
         emit Transfer(address(0),msg.sender,count);
     }}
-    function AIRDROP(address _a,uint256 _s,string memory _i)external onlyOwner{
-        _mint(_a,1,_s,_i);
+    function AIRDROP(address a,uint256 s,string memory r)external onlyOwner{
+        _mint(a,1,s,r);
     }
-    function MINT(uint256 _s,string memory _i)external payable{unchecked{
+    function MINT(uint256 s,string memory r)external payable{unchecked{
         require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.88]
-        _mint(msg.sender,1,_s,_i);
+        _mint(msg.sender,1,s,r);
     }}
-    function BREED(uint256 _1,uint256 _2,uint256 _s,string memory _i)external payable{unchecked{
+    function BREED(uint256 p,uint256 q,uint256 s,string memory r)external payable{unchecked{
         require(msg.value>=0.00 ether); //[DEPLOYMENT SET TO 0.02]
         bool existed;
         for(uint256 i=0;tokens[msg.sender].length>i;i++){
-            if(((owl[tokens[msg.sender][i]].parent1==_1&&owl[tokens[msg.sender][i]].parent2==_2)||
-            (owl[tokens[msg.sender][i]].parent2==_1&&owl[tokens[msg.sender][i]].parent1==_2))){
+            if(((owl[tokens[msg.sender][i]].parent1==p&&owl[tokens[msg.sender][i]].parent2==q)||
+            (owl[tokens[msg.sender][i]].parent2==p&&owl[tokens[msg.sender][i]].parent1==q))){
                 existed=true;
                 break;
             }
         }
         require(!existed&& //never mint before
-            owl[_1].gen==owl[_2].gen&& //must be same gen
-            owl[_1].owner==msg.sender&&owl[_2].owner==msg.sender&& //must only owner of _1 and _2
-            (owl[_1].sex==0&&owl[_2].sex==1||owl[_2].sex==0&&owl[_1].sex==1)&& //must be different sex
-            owl[_1].time+0<block.timestamp&&owl[_2].time+0<block.timestamp);//time [DEPLOYMENT 604800]
-        _mint(msg.sender,owl[_1].gen+1,_s,_i);
-        owl[count].parent1=_1;
-        owl[count].parent2=_2;
-        owl[_1].time=block.timestamp;
-        owl[_2].time=block.timestamp;
+            owl[p].gen==owl[q].gen&& //must be same gen
+            owl[p].owner==msg.sender&&owl[q].owner==msg.sender&& //must only owner of p and q
+            (owl[p].sex==0&&owl[q].sex==1||owl[q].sex==0&&owl[p].sex==1)&& //must be different sex
+            owl[p].time+0<block.timestamp&&owl[q].time+0<block.timestamp);//time [DEPLOYMENT 604800]
+        _mint(msg.sender,owl[p].gen+1,s,r);
+        owl[count].parent1=p;
+        owl[count].parent2=q;
+        owl[p].time=block.timestamp;
+        owl[q].time=block.timestamp;
     }}
-} 
+}
