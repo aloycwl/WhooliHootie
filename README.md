@@ -1,17 +1,6 @@
-Green chip NFT<br>
-Passive income NFT<br>
-Unlimited generation of breeding<br>
-Exclusive events<br><br>
+# OMG Front End
 
-Upcoming:<br>
-Arena - owl ultimate battle<br>
-Abode - metaverse to virtually interact with your owl<br>
-Agora - marketplace for all green chip related nft<br>
-Agartha - real living space for whcc nft holders by whcc nft holders<br><br>
+Contains the frontend interface file for all of Owl Merge Group files
 
-Make your breeding count!<br><br>
-
-Every piece of work here is in one-page format,<br>
-Linked to only necessary js cdn<br>
-It will only be connected to our official contract adddress<br>
-To be updated.
+- Whooli Hootie Conservation Club<br>
+- Owl Defense<br>
