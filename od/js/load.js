@@ -34,15 +34,13 @@ async function load(){
 		contract=new web3.eth.Contract(
 			abi
 		,'0xcb43635C93D1A060c12471eCD507E0251Cb6937e');
-		$('#name').append(await contract.methods.name.call().call());
-    const accounts=await web3.eth.getAccounts();
-    account=accounts[0];
 	}
 }
 var loaded=false;
 async function isWeb3(){ //to check if metamask is connected or disconnnected
-  await web3.eth.getAccounts().then(r=>{
-    if(r.length>0){ 
+  await web3.eth.getAccounts().then(d=>{
+    if(d.length>0){ 
+      account=d[0];
 			$('#connect').hide();
 			$('#root').show();
 			if(loaded==false){
