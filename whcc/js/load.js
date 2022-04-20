@@ -4,6 +4,7 @@ var myWHp1,
   myWHgen,
   myWHsex,
   myWHid,
+  myWHbreed,
   myWHimg = new Array(),
   breed1,
   breed2,
@@ -26,27 +27,8 @@ async function loadMyOwl() {
       myWHgen = d[3];
       myWHsex = d[4];
       myWHid = d[5];
+      myWHbreed = d[6];
     });
-  /*const arr = await contract.methods
-    .getWallet(await getCurrentAccount())
-    .call();
-  for (let i = 0; i < arr.length; i++) {
-    myWH[i] = new Array();
-    await contract.methods
-      .owl(arr[i])
-      .call()
-      .then((d) => {
-        for (let j = 0; j < 5; j++) myWH[i][j] = d[j + 1];
-      }); //parent1 parent2 time gen sex cid
-    myWH[i][5] = arr[i];
-    myWH[i][6] = img[myWH[i][3]][myWH[i][4]];
-    var breedable;
-    await contract.methods
-      .gen(parseInt(myWH[i][3]) + 1)
-      .call()
-      .then((d) => {
-        breedable = parseInt(d[0]) > parseInt(d[1]);
-      });*/
   for (let i = 0; i < myWHid.length; i++) {
     myWHimg[i] = img[myWHgen[i]][myWHsex[i]];
     $('#myWH').append(
@@ -70,7 +52,7 @@ async function loadMyOwl() {
         myWHimg[i] +
         (moment
           .duration(moment().diff(moment(moment.unix(myWHtime[i]))))
-          .asSeconds() > /*60480*/ 0 && breedable == true
+          .asSeconds() > /*60480*/ 0 && myWHbreed[i] == 1
           ? '" onclick="loadImg(' + i + ')" class="nft'
           : '" class="nobreed') +
         '"></video></p> '
@@ -81,35 +63,35 @@ async function loadImg(p1) {
   //add for breeding, hide the rest of it
   const s1 =
     '<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/' +
-    myWH[p1][6] +
+    myWHimg[p1] +
     '" class="nft"></video>';
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
-    breed1 = myWH[p1][5];
+    breed1 = myWHid[p1];
     hideOwls(p1);
   } else if ($('#breed2').is(':empty')) {
     $('#breed2').html(s1);
-    breed2 = myWH[p1][5];
+    breed2 = myWHid[p1];
     hideOwls(p1);
   } else return;
   if (!$('#breed1').is(':empty') && !$('#breed2').is(':empty')) {
     $('#breed').show();
     await contract.methods
-      .gen(parseInt(myWH[p1][3]) + 1)
+      .gen(parseInt(myWHgen[p1]) + 1)
       .call()
       .then((d) => {
         $('#lblBreed').html('(' + d[1] + '/' + d[0] + ')');
       });
-    gen = parseInt(myWH[p1][3]) + 1;
+    gen = parseInt(myWHgen[p1]) + 1;
   }
 }
 async function hideOwls(p1) {
   //breeding hide function
-  for (let i = 0; i < myWH.length; i++) {
-    if (myWH[i][4] == myWH[p1][4] || myWH[i][3] != myWH[p1][3])
-      $('#o' + myWH[i][5]).hide();
-    if (myWH[i][0] == myWH[p1][5]) $('#o' + myWH[i][1]).hide();
-    if (myWH[i][1] == myWH[p1][5]) $('#o' + myWH[i][0]).hide();
+  for (let i = 0; i < myWHid.length; i++) {
+    if (myWHsex[i] == myWHsex[p1] || myWHgen[i] != myWHgen[p1])
+      $('#o' + myWHid[i]).hide();
+    if (myWHp1[i] == myWHid[p1]) $('#o' + myWHp2[i]).hide();
+    if (myWHp2[i] == myWHid[p1]) $('#o' + myWHp1[i]).hide();
   }
 }
 async function unloadImg() {
@@ -120,7 +102,7 @@ async function unloadImg() {
   breed1 = null;
   breed2 = null;
   $('#breed').hide();
-  for (let i = 0; i < myWH.length; i++) $('#o' + myWH[i][5]).show();
+  for (let i = 0; i < myWHid.length; i++) $('#o' + myWHid[i]).show();
 }
 async function getCID() {
   //to input into minting
