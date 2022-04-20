@@ -4,7 +4,7 @@ var myWHp1,
   myWHgen,
   myWHsex,
   myWHid,
-  myWHimg,
+  myWHimg = new Array(),
   breed1,
   breed2,
   gen,
@@ -170,7 +170,7 @@ async function MINT() {
   await getCID();
   await contract.methods.MINT(sex, cid).send({
     from: account,
-    gas: 250000,
+    gas: 1000000,
     value: 0000000000000000000, //0880000000000000000, DEPLOYMENT
   });
   location.reload();
@@ -179,7 +179,7 @@ async function BREED() {
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
     from: await account,
-    gas: 400000,
+    gas: 1000000,
     value: 0000000000000000000, //0020000000000000000, DEPLOYMENT
   });
   location.reload();
@@ -202,8 +202,7 @@ async function load() {
       '0x915AbDc047F7472d7d15A95854E1C7e818fe7f56'
     );
     $('#name').append(
-        (await contract.methods.getBalance.call().call()) +
-        ' balance'
+      (await contract.methods.getBalance.call().call()) + ' balance'
     );
     await contract.methods
       .gen(1)
@@ -221,7 +220,7 @@ var loaded = false;
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
   await web3.eth.getAccounts().then((d) => {
-		account = d[0];
+    account = d[0];
     if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();
