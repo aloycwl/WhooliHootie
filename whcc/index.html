@@ -28,7 +28,7 @@ async function loadMyOwl(){
 		await contract.methods.owl(arr[i]).call().then(d=>{for(let j=0;j<6;j++)myWH[i][j]=d[j+1];}); //parent1 parent2 time gen sex cid
 		await $.getJSON('https://ipfs.io/ipfs/'+myWH[i][5],function(d){
 			myWH[i][6]=d.name;
-			myWH[i][7]=d.image.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
+			myWH[i][7]=d.image.replace("ipfs://", "https://ipfs.io/ipfs/");
 			myWH[i][8]=arr[i]; //token id
 		});
 		var breedable;
@@ -85,7 +85,7 @@ async function getCurrentAccount(){
 async function getCID(){ //to input into minting
 	sex=Math.floor(Math.random()*2);
 	var img;
-	await $.getJSON('https://aloycwl.github.io/omg_frontend/whcc/js/img.json',function(d){img=d.g[gen].s[sex]});
+	await $.getJSON('js/img.json',function(d){img=d.g[gen].s[sex]});
   const pro=await new Promise((d)=>{
     const reader=new FileReader();
     reader.onloadend=()=>{ipfs.add(ipfs.Buffer.from(reader.result)).then(files=>{d(files)});};
