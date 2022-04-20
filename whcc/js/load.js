@@ -1,33 +1,31 @@
 var myWH=new Array();
-var breed1,breed2,gen,sex,cid,count; //count need to add 1 when minting
+var breed1,breed2,gen,sex,cid,count;
 const ipfs=IpfsApi({host:'ipfs.infura.io',port:5001,protocol:'https'});
+var img;
 
 async function loadMyOwl(){
 	const arr=await contract.methods.getWallet(await getCurrentAccount()).call();
 	for(let i=0;i<arr.length;i++){
 		myWH[i]=new Array();
 		await contract.methods.owl(arr[i]).call().then(d=>{for(let j=0;j<6;j++)myWH[i][j]=d[j+1];}); //parent1 parent2 time gen sex cid
-		await $.getJSON('https://ipfs.io/ipfs/'+myWH[i][5],function(d){
-			myWH[i][6]=d.name;
-			myWH[i][7]=d.image.replace("ipfs://", "https://cloudflare-ipfs.com/ipfs/");
-			myWH[i][8]=arr[i]; //token id
-		});
+		myWH[i][6]="Whooli Hootie #"+arr[i];
+		myWH[i][7]="https://ipfs.io/ipfs/"+img[myWH[i][3]][myWH[i][4]];
+		myWH[i][8]=arr[i]; //token id
 		var breedable;
 		await contract.methods.gen(parseInt(myWH[i][3])+1).call().then(d=>{breedable=parseInt(d[0])>parseInt(d[1])});
 		$('#myWH').append(
 			'<p id="o'+arr[i]+'" class="boxnft"><b>'+myWH[i][6]+
 			'</b><br/>Parents ID: '+myWH[i][0]+' + '+myWH[i][1]+
 			'<br/>Last breeded: '+(myWH[i][2]>0?moment(moment.unix(myWH[i][2])).fromNow():'Since forever')+
-			'<br/>Generation: '+myWH[i][3]+' ('+(myWH[i][4]==0?'Female':'Male')+')<br/><img src="'+myWH[i][7]+
+			'<br/>Generation: '+myWH[i][3]+' ('+(myWH[i][4]==0?'Female':'Male')+
+			')<br/><video autoplay loop muted src="'+myWH[i][7]+
 			(moment.duration(moment().diff(moment(moment.unix(myWH[i][2])))).asSeconds()>/*60480*/0&&breedable==true?
-				'" onclick="loadImg('+i+')" class="nft':
-				'" class="nobreed')
-			 +'"></p>'
-		);
+				'" onclick="loadImg('+i+')" class="nft':'" class="nobreed')+'"></video></p> '
+		)
 	}
 }
 async function loadImg(p1){ //add for breeding, hide the rest of it 
-	const s1='<img onclick="unloadImg()" src="'+myWH[p1][7]+'" class="nft">';
+	const s1='<video autoplay loop muted onclick="unloadImg()" src="'+myWH[p1][7]+'" class="nft"></video>';
 	if($('#breed1').is(':empty')){
 		$('#breed1').html(s1);
 		breed1=myWH[p1][8];
@@ -65,18 +63,16 @@ async function getCurrentAccount(){
 }
 async function getCID(){ //to input into minting
 	sex=Math.floor(Math.random()*2);
-	var img;
-	await $.getJSON('https://aloycwl.github.io/omg_frontend/whcc/js/img.json',function(d){img=d.g[gen].s[sex]});
   const pro=await new Promise((d)=>{
     const reader=new FileReader();
     reader.onloadend=()=>{ipfs.add(ipfs.Buffer.from(reader.result)).then(files=>{d(files)});};
     reader.readAsArrayBuffer(new File([JSON.stringify({
     "name":"Whooli Hootie #"+(parseInt(count)+1),
     "description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!",
-    "image":"ipfs://"+img,
+    "animation_url":"ipfs://"+img[gen][sex],
     "date":Date.now(),
     "attributes":[
-      {"trait_type":"Generation","value":gen},
+      {"display_type":"number","trait_type":"Generation","value":gen},
       {"trait_type":"Gender","value":sex==0?"Female":"Male"},
       {"trait_type":"Parent1","value":breed1==null?"":"WHCC #"+breed1},
       {"trait_type":"Parent2","value":breed2==null?"":"WHCC #"+breed2}]
@@ -118,6 +114,7 @@ async function load(){
 		$('#name').append(await contract.methods.name.call().call()+' - '+await contract.methods.getBalance.call().call()+' balance');
 		await contract.methods.gen(1).call().then(d=>{$('#mint').append(d[1]+'/'+d[0]+')')});
 		count=await contract.methods.count.call().call();
+		await $.getJSON('js/img.json',function(d){img=d});
 	}
 }
 var loaded=false;
