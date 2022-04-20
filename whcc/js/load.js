@@ -199,7 +199,7 @@ async function load() {
   } else {
     contract = new web3.eth.Contract(
       abi,
-      '0x915AbDc047F7472d7d15A95854E1C7e818fe7f56'
+      '0xD9B8883A657B63f90E0D95Bdd588908243DAB4FA'
     );
     $('#name').append(
       (await contract.methods.getBalance.call().call()) + ' balance'
