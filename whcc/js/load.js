@@ -1,10 +1,33 @@
-var myWH = new Array();
-var breed1, breed2, gen, sex, cid, count;
+var myWHp1,
+  myWHp2,
+  myWHtime,
+  myWHgen,
+  myWHsex,
+  myWHid,
+  myWHimg,
+  breed1,
+  breed2,
+  gen,
+  sex,
+  cid,
+  count,
+  account;
 const ipfs = IpfsApi({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 var img;
 
 async function loadMyOwl() {
-  const arr = await contract.methods
+  await contract.methods
+    .PLAYERITEMS(account)
+    .call()
+    .then((d) => {
+      myWHp1 = d[0];
+      myWHp2 = d[1];
+      myWHtime = d[2];
+      myWHgen = d[3];
+      myWHsex = d[4];
+      myWHid = d[5];
+    });
+  /*const arr = await contract.methods
     .getWallet(await getCurrentAccount())
     .call();
   for (let i = 0; i < arr.length; i++) {
@@ -13,39 +36,40 @@ async function loadMyOwl() {
       .owl(arr[i])
       .call()
       .then((d) => {
-        for (let j = 0; j < 6; j++) myWH[i][j] = d[j + 1];
+        for (let j = 0; j < 5; j++) myWH[i][j] = d[j + 1];
       }); //parent1 parent2 time gen sex cid
-    myWH[i][6] = 'Whooli Hootie #' + arr[i];
-    myWH[i][7] = 'https://ipfs.io/ipfs/' + img[myWH[i][3]][myWH[i][4]];
-    myWH[i][8] = arr[i]; //token id
+    myWH[i][5] = arr[i];
+    myWH[i][6] = img[myWH[i][3]][myWH[i][4]];
     var breedable;
     await contract.methods
       .gen(parseInt(myWH[i][3]) + 1)
       .call()
       .then((d) => {
         breedable = parseInt(d[0]) > parseInt(d[1]);
-      });
+      });*/
+  for (let i = 0; i < myWHid.length; i++) {
+    myWHimg[i] = img[myWHgen[i]][myWHsex[i]];
     $('#myWH').append(
       '<p id="o' +
-        arr[i] +
-        '" class="boxnft"><b>' +
-        myWH[i][6] +
+        myWHid[i] +
+        '" class="boxnft"><b>Whooli Hootie #' +
+        myWHid[i] +
         '</b><br/>Parents ID: ' +
-        myWH[i][0] +
+        myWHp1[i] +
         ' + ' +
-        myWH[i][1] +
+        myWHp1[i] +
         '<br/>Last breeded: ' +
-        (myWH[i][2] > 0
-          ? moment(moment.unix(myWH[i][2])).fromNow()
+        (myWHtime[i] > 0
+          ? moment(moment.unix(myWHtime[i])).fromNow()
           : 'Since forever') +
         '<br/>Generation: ' +
-        myWH[i][3] +
+        myWHgen[i] +
         ' (' +
-        (myWH[i][4] == 0 ? 'Female' : 'Male') +
-        ')<br/><video autoplay loop muted src="' +
-        myWH[i][7] +
+        (myWHsex[i] == 0 ? 'Female' : 'Male') +
+        ')<br/><video autoplay loop muted src="https://ipfs.io/ipfs/' +
+        myWHimg[i] +
         (moment
-          .duration(moment().diff(moment(moment.unix(myWH[i][2]))))
+          .duration(moment().diff(moment(moment.unix(myWHtime[i]))))
           .asSeconds() > /*60480*/ 0 && breedable == true
           ? '" onclick="loadImg(' + i + ')" class="nft'
           : '" class="nobreed') +
@@ -56,16 +80,16 @@ async function loadMyOwl() {
 async function loadImg(p1) {
   //add for breeding, hide the rest of it
   const s1 =
-    '<video autoplay loop muted onclick="unloadImg()" src="' +
-    myWH[p1][7] +
+    '<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/' +
+    myWH[p1][6] +
     '" class="nft"></video>';
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
-    breed1 = myWH[p1][8];
+    breed1 = myWH[p1][5];
     hideOwls(p1);
   } else if ($('#breed2').is(':empty')) {
     $('#breed2').html(s1);
-    breed2 = myWH[p1][8];
+    breed2 = myWH[p1][5];
     hideOwls(p1);
   } else return;
   if (!$('#breed1').is(':empty') && !$('#breed2').is(':empty')) {
@@ -83,9 +107,9 @@ async function hideOwls(p1) {
   //breeding hide function
   for (let i = 0; i < myWH.length; i++) {
     if (myWH[i][4] == myWH[p1][4] || myWH[i][3] != myWH[p1][3])
-      $('#o' + myWH[i][8]).hide();
-    if (myWH[i][0] == myWH[p1][8]) $('#o' + myWH[i][1]).hide();
-    if (myWH[i][1] == myWH[p1][8]) $('#o' + myWH[i][0]).hide();
+      $('#o' + myWH[i][5]).hide();
+    if (myWH[i][0] == myWH[p1][5]) $('#o' + myWH[i][1]).hide();
+    if (myWH[i][1] == myWH[p1][5]) $('#o' + myWH[i][0]).hide();
   }
 }
 async function unloadImg() {
@@ -96,11 +120,7 @@ async function unloadImg() {
   breed1 = null;
   breed2 = null;
   $('#breed').hide();
-  for (let i = 0; i < myWH.length; i++) $('#o' + myWH[i][8]).show();
-}
-async function getCurrentAccount() {
-  const accounts = await web3.eth.getAccounts();
-  return accounts[0];
+  for (let i = 0; i < myWH.length; i++) $('#o' + myWH[i][5]).show();
 }
 async function getCID() {
   //to input into minting
@@ -149,7 +169,7 @@ async function MINT() {
   gen = 1;
   await getCID();
   await contract.methods.MINT(sex, cid).send({
-    from: await getCurrentAccount(),
+    from: account,
     gas: 250000,
     value: 0000000000000000000, //0880000000000000000, DEPLOYMENT
   });
@@ -158,7 +178,7 @@ async function MINT() {
 async function BREED() {
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
-    from: await getCurrentAccount(),
+    from: await account,
     gas: 400000,
     value: 0000000000000000000, //0020000000000000000, DEPLOYMENT
   });
@@ -179,11 +199,9 @@ async function load() {
   } else {
     contract = new web3.eth.Contract(
       abi,
-      '0x4dec9B9e26294a931D4e3a160163c701a4A2cDF3'
+      '0x915AbDc047F7472d7d15A95854E1C7e818fe7f56'
     );
     $('#name').append(
-      (await contract.methods.name.call().call()) +
-        ' - ' +
         (await contract.methods.getBalance.call().call()) +
         ' balance'
     );
@@ -202,8 +220,9 @@ async function load() {
 var loaded = false;
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
-  await web3.eth.getAccounts().then((r) => {
-    if (r.length > 0) {
+  await web3.eth.getAccounts().then((d) => {
+		account = d[0];
+    if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();
       if (loaded == false) {
