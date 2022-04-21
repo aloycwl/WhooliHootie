@@ -179,6 +179,9 @@ async function load() {
     });
     location.reload();
   } else {
+    await web3.eth.getAccounts().then((d) => {
+      account = d[0];
+    });
     contract = new web3.eth.Contract(
       abi,
       '0x1193034262F5466Ac6AE6987aFbc4e93bA1FB07A'
@@ -201,11 +204,7 @@ async function load() {
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
-    owlWallet =
-      (await contract2.methods
-        .balanceOf('0x15eD406870dB283E810D5885e432d315C94DD0dd')
-        .call()) /
-      10 ** 18;
+    owlWallet = (await contract2.methods.balanceOf(account).call()) / 10 ** 18;
     $('#name').append(
       (await contract.methods.getBalance.call().call()) +
         ' balance. Owl Wallet: ' +
@@ -216,19 +215,20 @@ async function load() {
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
   await web3.eth.getAccounts().then((d) => {
-    account = d[0];
     if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();
-      if (loaded == false) {
+      if (!loaded) {
         loadMyOwl();
         loaded = true;
       }
     } else {
       $('#connect').show();
       $('#root').hide();
+      $('#name').html('<b>Whooli Hootie&nbsp;</b>');
+      $('#mint').html('MINT (');
     }
   });
 }
+setInterval(isWeb3, 1000);
 load();
-setInterval(isWeb3, 2000);
