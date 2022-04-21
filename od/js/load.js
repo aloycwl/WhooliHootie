@@ -53,5 +53,5 @@ async function isWeb3(){ //to check if metamask is connected or disconnnected
     }
   });
 }
-load();
 setInterval(isWeb3,2000);
+load();

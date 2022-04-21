@@ -159,7 +159,7 @@ async function MINT() {
   location.reload();
 }
 async function BREED() {
-  if (owlWallet<30) {
+  if (owlWallet < 30) {
     $('#breed').html('Insufficient OWL Token');
     return;
   }
@@ -187,7 +187,7 @@ async function load() {
     });
     contract = new web3.eth.Contract(
       abi,
-      '0x1193034262F5466Ac6AE6987aFbc4e93bA1FB07A'
+      '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
     await contract.methods
       .gen(1)
