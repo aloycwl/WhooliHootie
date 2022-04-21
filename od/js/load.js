@@ -14,26 +14,26 @@ async function loadNFTs(){
   }
 }
 async function MINT(){
-	gen=1;
 	await contract.methods.MINT($("#items").val()).send({
 		from:account,
-		gas:1000000,
 		value:0000000000000000000 //0880000000000000000, DEPLOYMENT
 	});
 	location.reload();
 }
+async function CLAIM(){
+	await contract.methods.MINT(account).send();
+	location.reload();
+}
 async function load(){
-	if(ethereum){
-		web3=new Web3(ethereum);
-		await window.ethereum.request({method:'eth_requestAccounts'});
-	}
+	web3=new Web3(ethereum);
+	await window.ethereum.request({method:'eth_requestAccounts'});
 	if(await web3.eth.net.getId()!=4){ //DEPLOYMENT change this and the one below to 1 as mainnet
 		await ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x4'}]});
 		location.reload();
 	}else{
 		contract=new web3.eth.Contract(
 			abi
-		,'0xcb43635C93D1A060c12471eCD507E0251Cb6937e');
+		,'0x539b76C8307d50a249C1c3E38fa660372bBc44B9');
 	}
 }
 var loaded=false;

@@ -153,7 +153,6 @@ async function MINT() {
   await getCID();
   await contract.methods.MINT(sex, cid).send({
     from: account,
-    gas: 1000000,
     value: 0000000000000000000, //0880000000000000000, DEPLOYMENT
   });
   location.reload();
@@ -166,7 +165,6 @@ async function BREED() {
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
     from: await account,
-    gas: 1000000,
     value: 0000000000000000000, //0020000000000000000, DEPLOYMENT
   });
   location.reload();
