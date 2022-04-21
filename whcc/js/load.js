@@ -12,7 +12,8 @@ var myWHp1,
   sex,
   cid,
   count,
-  account;
+  account,
+  loaded = false;
 const ipfs = IpfsApi({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 var img;
 
@@ -105,7 +106,6 @@ async function unloadImg() {
   for (let i = 0; i < myWHid.length; i++) $('#o' + myWHid[i]).show();
 }
 async function getCID() {
-  //to input into minting
   sex = Math.floor(Math.random() * 2);
   const pro = await new Promise((d) => {
     const reader = new FileReader();
@@ -158,6 +158,7 @@ async function MINT() {
   location.reload();
 }
 async function BREED() {
+  //0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F - ERC20 address
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
     from: await account,
@@ -179,9 +180,9 @@ async function load() {
     });
     location.reload();
   } else {
-    contract = new web3.eth.Contract(
+    contract = await new web3.eth.Contract(
       abi,
-      '0xD9B8883A657B63f90E0D95Bdd588908243DAB4FA'
+      '0x1193034262F5466Ac6AE6987aFbc4e93bA1FB07A'
     );
     $('#name').append(
       (await contract.methods.getBalance.call().call()) + ' balance'
@@ -198,7 +199,6 @@ async function load() {
     });
   }
 }
-var loaded = false;
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
   await web3.eth.getAccounts().then((d) => {
