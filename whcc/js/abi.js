@@ -144,9 +144,7 @@ const abi = [
     stateMutability: 'view',
     type: 'function',
   },
-];
-
-const abi2 = [
+],abi2 = [
 	{
 		constant: true,
 		inputs: [{ name: '_owner', type: 'address' }],
