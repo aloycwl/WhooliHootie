@@ -13,7 +13,8 @@ var myWHp1,
   cid,
   count,
   account,
-  loaded = false;
+  loaded = false,
+  owlWallet;
 const ipfs = IpfsApi({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 var img;
 
@@ -40,7 +41,7 @@ async function loadMyOwl() {
         '</b><br/>Parents ID: ' +
         myWHp1[i] +
         ' + ' +
-        myWHp[i] +
+        myWHp2[i] +
         '<br/>Last breeded: ' +
         (myWHtime[i] > 0
           ? moment(moment.unix(myWHtime[i])).fromNow()
@@ -168,10 +169,8 @@ async function BREED() {
   location.reload();
 }
 async function load() {
-  if (ethereum) {
-    web3 = new Web3(ethereum);
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-  }
+  web3 = new Web3(ethereum);
+  await window.ethereum.request({ method: 'eth_requestAccounts' });
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
     await ethereum.request({
@@ -180,12 +179,9 @@ async function load() {
     });
     location.reload();
   } else {
-    contract = await new web3.eth.Contract(
+    contract = new web3.eth.Contract(
       abi,
       '0x1193034262F5466Ac6AE6987aFbc4e93bA1FB07A'
-    );
-    $('#name').append(
-      (await contract.methods.getBalance.call().call()) + ' balance'
     );
     await contract.methods
       .gen(1)
@@ -197,6 +193,21 @@ async function load() {
     await $.getJSON('js/img.json', function (d) {
       img = d;
     });
+    // get token balance
+    contract2 = new web3.eth.Contract(
+      abi2,
+      '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
+    );
+    owlWallet =
+      (await contract2.methods
+        .balanceOf('0x15eD406870dB283E810D5885e432d315C94DD0dd')
+        .call()) /
+      10 ** 18;
+    $('#name').append(
+      (await contract.methods.getBalance.call().call()) +
+        ' balance. Owl Wallet: ' +
+        owlWallet
+    );
   }
 }
 async function isWeb3() {
