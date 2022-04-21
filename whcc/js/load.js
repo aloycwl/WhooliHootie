@@ -40,7 +40,7 @@ async function loadMyOwl() {
         '</b><br/>Parents ID: ' +
         myWHp1[i] +
         ' + ' +
-        myWHp1[i] +
+        myWHp[i] +
         '<br/>Last breeded: ' +
         (myWHtime[i] > 0
           ? moment(moment.unix(myWHtime[i])).fromNow()
