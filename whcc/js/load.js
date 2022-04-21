@@ -159,7 +159,10 @@ async function MINT() {
   location.reload();
 }
 async function BREED() {
-  //0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F - ERC20 address
+  if (owlWallet<30) {
+    $('#breed').html('Insufficient OWL Token');
+    return;
+  }
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
     from: await account,
