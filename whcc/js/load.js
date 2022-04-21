@@ -190,9 +190,12 @@ async function load() {
         $('#mint').append(d[1] + '/' + d[0] + ')');
       });
     count = await contract.methods.count.call().call();
-    await $.getJSON('js/img.json', function (d) {
-      img = d;
-    });
+    await $.getJSON(
+      'https://aloycwl.github.io/omg_frontend/whcc/js/img.min.json',
+      function (d) {
+        img = d;
+      }
+    );
     // get token balance
     contract2 = new web3.eth.Contract(
       abi2,
