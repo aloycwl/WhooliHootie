@@ -169,12 +169,13 @@ async function load() {
       img = d;
     }
   );
-  if (ethereum) web3 = new Web3(ethereum);
+  /*if (ethereum)*/ web3 = new Web3(ethereum);
+  web3.eth.setProvider(ethereum);
   /*else {
     web3 = new Web3(
       'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
-    );*
-  }
+    );
+  }*/
   await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
     account = d[0];
   });
@@ -210,8 +211,9 @@ async function load() {
     );
     $('#connect').hide();
   }
+  loadMyOwl();
 }
-async function isWeb3() {
+/*async function isWeb3() {
   //to check if metamask is connected or disconnnected
   await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
     if (d.length > 0) {
@@ -229,5 +231,5 @@ async function isWeb3() {
     }
   });
 }
-setInterval(isWeb3, 1000);
+setInterval(isWeb3, 1000);*/
 load();
