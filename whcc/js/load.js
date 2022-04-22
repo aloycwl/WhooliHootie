@@ -169,12 +169,15 @@ async function load() {
       img = d;
     }
   );
-  if (window.ethereum) {
-    web3 = new Web3(ethereum);
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-  }else{
-    web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22"));
+  if (ethereum) web3 = new Web3(ethereum);
+  else {
+    web3 = new Web3(
+      new Web3.providers.HttpProvider(
+        'https://rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
+      )
+    );
   }
+  ethereum.request({ method: 'eth_requestAccounts' });
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
     await ethereum.request({
