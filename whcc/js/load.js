@@ -169,12 +169,12 @@ async function load() {
       img = d;
     }
   );
-  //if (ethereum) web3 = new Web3(ethereum);
-  //else {
+  if (ethereum) web3 = new Web3(ethereum);
+  else {
   web3 = new Web3(
-    'https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
+    'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
   );
-  //}
+  /}
   await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
     account = d[0];
   });
