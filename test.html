@@ -7,7 +7,7 @@
   async function load() {
     web3 = await new Web3(ethereum);
     account = await ethereum.request({ method: 'eth_requestAccounts' });
-    alert(account);
+    $('#mint').html(account);
 
     /**
     web3 = await new Web3(
