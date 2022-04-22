@@ -170,11 +170,11 @@ async function load() {
     }
   );
   if (ethereum) web3 = new Web3(ethereum);
-  else {
-  web3 = new Web3(
-    'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
-  );
-  /}
+  /*else {
+    web3 = new Web3(
+      'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
+    );*
+  }
   await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
     account = d[0];
   });
