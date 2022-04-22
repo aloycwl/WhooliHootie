@@ -169,15 +169,15 @@ async function load() {
       img = d;
     }
   );
-  if (ethereum) web3 = new Web3(ethereum);
-  else {
-    web3 = new Web3(
-      new Web3.providers.HttpProvider(
-        'https://rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
-      )
-    );
-  }
-  ethereum.request({ method: 'eth_requestAccounts' });
+  //if (ethereum) web3 = new Web3(ethereum);
+  //else {
+  web3 = new Web3(
+    'https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
+  );
+  //}
+  await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
+    account = d[0];
+  });
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
     await ethereum.request({
@@ -186,9 +186,6 @@ async function load() {
     });
     location.reload();
   } else {
-    await web3.eth.getAccounts().then((d) => {
-      account = d[0];
-    });
     contract = new web3.eth.Contract(
       abi,
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
@@ -216,7 +213,7 @@ async function load() {
 }
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
-  await web3.eth.getAccounts().then((d) => {
+  await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
     if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();
