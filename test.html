@@ -5,7 +5,11 @@
   var web3, account;
 
   async function load() {
-    /**/
+    web3 = await new Web3(ethereum);
+    account = await ethereum.request({ method: 'eth_requestAccounts' });
+    alert(account)
+
+    /**
     web3 = await new Web3(
       'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
     );
