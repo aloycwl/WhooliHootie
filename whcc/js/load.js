@@ -170,8 +170,8 @@ async function load() {
     }
   );
   /*if (ethereum)*/ web3 = new Web3(ethereum);
-  /web3.setProvider(ethereum);
-  //web3.eth.setProvider(ethereum);
+  web3.setProvider(ethereum);
+  web3.eth.setProvider(ethereum);
   /*else {
     web3 = new Web3(
       'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
