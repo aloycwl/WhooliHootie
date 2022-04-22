@@ -153,7 +153,7 @@ async function MINT() {
   await getCID();
   await contract.methods.MINT(sex, cid).send({
     from: account,
-    value: 0000000000000000000, //0880000000000000000, DEPLOYMENT
+    value: 0, //0.88e18, DEPLOYMENT
   });
   location.reload();
 }
@@ -165,13 +165,20 @@ async function BREED() {
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
     from: await account,
-    value: 0000000000000000000, //0020000000000000000, DEPLOYMENT
   });
   location.reload();
 }
 async function load() {
-  web3 = new Web3(ethereum);
-  await window.ethereum.request({ method: 'eth_requestAccounts' });
+  await $.getJSON(
+    'https://aloycwl.github.io/omg_frontend/whcc/js/img.min.json',
+    function (d) {
+      img = d;
+    }
+  );
+  if (window.ethereum) {
+    web3 = new Web3(ethereum);
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+  }
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
     await ethereum.request({
@@ -194,23 +201,17 @@ async function load() {
         $('#mint').append(d[1] + '/' + d[0] + ')');
       });
     count = await contract.methods.count.call().call();
-    await $.getJSON(
-      'https://aloycwl.github.io/omg_frontend/whcc/js/img.min.json',
-      function (d) {
-        img = d;
-      }
-    );
     // get token balance
     contract2 = new web3.eth.Contract(
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
-    owlWallet = (await contract2.methods.balanceOf(account).call()) / 10 ** 18;
+    owlWallet = (await contract2.methods.balanceOf(account).call()) / 1e18;
     $('#name').append(
-      (await contract.methods.getBalance.call().call()) +
-        ' balance. Owl Wallet: ' +
-        owlWallet
+      (await contract.methods.getBalance.call().call()) / 1e18 +
+        ' balance. Owl Wallet: ${owlWallet}'
     );
+    $('#connect').hide();
   }
 }
 async function isWeb3() {
