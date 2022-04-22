@@ -14,9 +14,8 @@ var myWHp1,
   count,
   account,
   loaded = false,
-  owlWallet;
-const ipfs = IpfsApi({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
-var img;
+  owlWallet,
+  img;
 
 async function loadMyOwl() {
   await contract.methods
@@ -34,39 +33,29 @@ async function loadMyOwl() {
   for (let i = 0; i < myWHid.length; i++) {
     myWHimg[i] = img[myWHgen[i]][myWHsex[i]];
     $('#myWH').append(
-      '<p id="o' +
-        myWHid[i] +
-        '" class="boxnft"><b>Whooli Hootie #' +
-        myWHid[i] +
-        '</b><br/>Parents ID: ' +
-        myWHp1[i] +
-        ' + ' +
-        myWHp2[i] +
-        '<br/>Last breeded: ' +
-        (myWHtime[i] > 0
+      `<p id="o${myWHid[i]}" class="boxnft"><b>Whooli Hootie #${
+        myWHid[i]
+      }</b><br/>Parents : ${myWHp1[i]} + ${myWHp2[i]}<br/>Last breeded: ${
+        myWHtime[i] > 0
           ? moment(moment.unix(myWHtime[i])).fromNow()
-          : 'Since forever') +
-        '<br/>Generation: ' +
-        myWHgen[i] +
-        ' (' +
-        (myWHsex[i] == 0 ? 'Female' : 'Male') +
-        ')<br/><video autoplay loop muted src="https://ipfs.io/ipfs/' +
-        myWHimg[i] +
-        (moment
+          : 'Since forever'
+      }<br/>Generation: ${myWHgen[i]} (${
+        myWHsex[i] == 0 ? 'Female' : 'Male'
+      })<br/><video autoplay loop muted src="https://ipfs.io/ipfs/${
+        myWHimg[i]
+      }${
+        moment
           .duration(moment().diff(moment(moment.unix(myWHtime[i]))))
           .asSeconds() > /*60480*/ 0 && myWHbreed[i] == 1
-          ? '" onclick="loadImg(' + i + ')" class="nft'
-          : '" class="nobreed') +
-        '"></video></p> '
+          ? `" onclick="loadImg(${i})" class="nft`
+          : `" class="nobreed`
+      }"></video></p> `
     );
   }
 }
 async function loadImg(p1) {
   //add for breeding, hide the rest of it
-  const s1 =
-    '<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/' +
-    myWHimg[p1] +
-    '" class="nft"></video>';
+  const s1 = `<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/${myWHimg[p1]}" class="nft"></video>`;
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
     breed1 = myWHid[p1];
@@ -82,7 +71,7 @@ async function loadImg(p1) {
       .gen(parseInt(myWHgen[p1]) + 1)
       .call()
       .then((d) => {
-        $('#lblBreed').html('(' + d[1] + '/' + d[0] + ')');
+        $('#lblBreed').html(`(${d[1]}/${d[0]})`);
       });
     gen = parseInt(myWHgen[p1]) + 1;
   }
@@ -92,8 +81,8 @@ async function hideOwls(p1) {
   for (let i = 0; i < myWHid.length; i++) {
     if (myWHsex[i] == myWHsex[p1] || myWHgen[i] != myWHgen[p1])
       $('#o' + myWHid[i]).hide();
-    if (myWHp1[i] == myWHid[p1]) $('#o' + myWHp2[i]).hide();
-    if (myWHp2[i] == myWHid[p1]) $('#o' + myWHp1[i]).hide();
+    if (myWHp1[i] == myWHid[p1]) $(`#o${myWHp2[i]}`).hide();
+    if (myWHp2[i] == myWHid[p1]) $(`#o${myWHp1[i]}`).hide();
   }
 }
 async function unloadImg() {
@@ -107,6 +96,11 @@ async function unloadImg() {
   for (let i = 0; i < myWHid.length; i++) $('#o' + myWHid[i]).show();
 }
 async function getCID() {
+  const ipfs = IpfsApi({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+  });
   sex = Math.floor(Math.random() * 2);
   const pro = await new Promise((d) => {
     const reader = new FileReader();
@@ -119,24 +113,24 @@ async function getCID() {
       new File(
         [
           JSON.stringify({
-            name: 'Whooli Hootie #' + (parseInt(count) + 1),
+            name: `Whooli Hootie #${parseInt(count) + 1}`,
             description:
               'We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!',
-            animation_url: 'ipfs://' + img[gen][sex],
+            animation_url: `ipfs://${img[gen][sex]}`,
             attributes: [
               { display_type: 'number', trait_type: 'Generation', value: gen },
               { trait_type: 'Gender', value: sex == 0 ? 'Female' : 'Male' },
               {
                 trait_type: 'Parent 1',
-                value: breed1 == null ? '' : 'WHCC #' + breed1,
+                value: breed1 == null ? '' : `WHCC #${breed1}`,
               },
               {
                 trait_type: 'Parent 2',
-                value: breed2 == null ? '' : 'WHCC #' + breed2,
+                value: breed2 == null ? '' : `WHCC #${breed2}`,
               },
               {
                 display_type: 'date',
-                trait_type: 'Hatched date',
+                trait_type: 'Hatched on',
                 value: Date.now(),
               },
             ],
@@ -159,7 +153,7 @@ async function MINT() {
 }
 async function BREED() {
   if (owlWallet < 30) {
-    $('#breed').html('Insufficient OWL Token');
+    $('#breed').html(`Insufficient OWL Token`);
     return;
   }
   await getCID();
@@ -178,6 +172,8 @@ async function load() {
   if (window.ethereum) {
     web3 = new Web3(ethereum);
     await window.ethereum.request({ method: 'eth_requestAccounts' });
+  }else{
+    web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22"));
   }
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
@@ -198,7 +194,7 @@ async function load() {
       .gen(1)
       .call()
       .then((d) => {
-        $('#mint').append(d[1] + '/' + d[0] + ')');
+        $('#mint').append(`${d[1]} / ${d[0]} )`);
       });
     count = await contract.methods.count.call().call();
     // get token balance
@@ -208,8 +204,9 @@ async function load() {
     );
     owlWallet = (await contract2.methods.balanceOf(account).call()) / 1e18;
     $('#name').append(
-      (await contract.methods.getBalance.call().call()) / 1e18 +
-        ' balance. Owl Wallet: ${owlWallet}'
+      `${
+        (await contract.methods.getBalance.call().call()) / 1e18
+      } balance. Owl Wallet: ${owlWallet}`
     );
     $('#connect').hide();
   }
@@ -227,7 +224,7 @@ async function isWeb3() {
     } else {
       $('#connect').show();
       $('#root').hide();
-      $('#name').html('<b>Whooli Hootie&nbsp;</b>');
+      $('#name').html(`<b>Whooli Hootie </b>`);
       $('#mint').html('MINT (');
     }
   });
