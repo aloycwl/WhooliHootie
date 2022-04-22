@@ -12,40 +12,6 @@
       $('#mint').append(account);
     } else $('#mint').append('no web3');
 
-    /**
-    web3 = await new Web3(
-      'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
-    );
-    account = await ethereum.request({ method: 'eth_requestAccounts' });
-    contract = new web3.eth.Contract(
-      abi,
-      '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
-    );
-    await contract.methods
-      .gen(1)
-      .call()
-      .then((d) => {
-        $('#mint').html(`${d[1]} / ${d[0]}`);
-      });
-
-    /**/
-    /*
-    web3 = await new Web3(
-      await new Web3.providers.HttpProvider(
-        'https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
-      )
-    );
-    account = await web3.eth.getAccounts();
-    /**/
-    /*
-    var another = await new new Web3(
-      Web3.providers.WebsocketProvider(
-        'wss://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
-      )
-    );
-    console.log(another);
-  
-  /**/
   }
   load();
   async function MINT() {
