@@ -176,7 +176,7 @@ async function load() {
       img = d;
     }
   );
-  if (ethereum) web3 = new Web3(window.ethereum);
+  if (ethereum) web3 = new Web3(ethereum);
   else {
     $('#connect').html('Please install Metamask');
     return;
