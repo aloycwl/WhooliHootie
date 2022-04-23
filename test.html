@@ -6,42 +6,34 @@
     <script src="https://aloycwl.github.io/js/cdn/web3.min.js"></script>
   </head>
   <body>
-    <div id="mint" onclick="MINT()">0<br /></div>
+    <a id="mint" onclick="MINT()">Your address is: </a>
 
     <script>
-      var web3, account, contract;
+      var web3, account, contract, count;
 
       async function load() {
-        $('#mint').append('line 1<br>');
-        if (window.ethereum) {
-          web3 = await new Web3(window.ethereum);
-          account = await ethereum.request({ method: 'eth_requestAccounts' });
-          $('#mint').append(account);
-        } else {
-          $('#mint').append('no web3');
-          web3 = await new Web3(
-            'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
-            //or infura example https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22
-          );
-          account = await ethereum.request({ method: 'eth_requestAccounts' });
-          $('#mint').append(account);
-        }
+        web3 = await new Web3(
+          //'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
+          'https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
+        );
+        account = await ethereum.request({ method: 'eth_requestAccounts' });
+
         contract = new web3.eth.Contract(
           abi,
           '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
         );
+
+        count = await contract.methods.count.call().call();
+
+        $('#mint').append(
+          `${account[0]}, and the contract has minted ${count} NFTs`
+        );
       }
       load();
-      async function MINT() {
-        await contract.methods.MINT('0', 'some_CID').send({
-          from: account[0],
-          value: 0,
-        });
-      }
     </script>
     <script
-    defer
-    src="https://aloycwl.github.io/omg_frontend/whcc/js/abi.js"
-  ></script>
+      defer
+      src="https://aloycwl.github.io/omg_frontend/whcc/js/abi.js"
+    ></script>
   </body>
 </html>

@@ -217,7 +217,7 @@ async function load() {
 }
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
-  await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
+  await web3.eth.getAccounts().then((d) => {
     if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();
