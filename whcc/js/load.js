@@ -12,14 +12,14 @@ var myWHp1,
   sex,
   cid,
   count,
-  account,
+  acct,
   loaded = false,
   owlWallet,
   img;
 
 async function loadMyOwl() {
   await contract.methods
-    .PLAYERITEMS(account)
+    .PLAYERITEMS(acct[0])
     .call()
     .then((d) => {
       myWHp1 = d[0];
@@ -146,7 +146,7 @@ async function MINT() {
   gen = 1;
   await getCID();
   await contract.methods.MINT(sex, cid).send({
-    from: account,
+    from: acct[0],
     value: 0, //0.88e18, DEPLOYMENT
   });
   location.reload();
@@ -158,7 +158,7 @@ async function BREED() {
   }
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
-    from: await account,
+    from: await acct[0],
   });
   location.reload();
 }
@@ -177,9 +177,7 @@ async function load() {
       'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
     );
   }*/
-  await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
-    account = d[0];
-  });
+  acct = await ethereum.request({ method: 'eth_requestAccounts' });
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
     await ethereum.request({
@@ -204,7 +202,7 @@ async function load() {
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
-    owlWallet = (await contract2.methods.balanceOf(account).call()) / 1e18;
+    owlWallet = (await contract2.methods.balanceOf(acct[0]).call()) / 1e18;
     $('#name').append(
       `${
         (await contract.methods.getBalance.call().call()) / 1e18
@@ -214,7 +212,7 @@ async function load() {
   }
   loadMyOwl();
 }
-/*async function isWeb3() {
+async function isWeb3() {
   //to check if metamask is connected or disconnnected
   await ethereum.request({ method: 'eth_requestAccounts' }).then((d) => {
     if (d.length > 0) {
@@ -232,5 +230,5 @@ async function load() {
     }
   });
 }
-setInterval(isWeb3, 1000);*/
+setInterval(isWeb3, 1000);
 load();
