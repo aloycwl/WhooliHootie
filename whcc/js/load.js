@@ -118,8 +118,15 @@ async function getCID() {
               'We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!',
             animation_url: `ipfs://${img[gen][sex]}`,
             attributes: [
-              { display_type: 'number', trait_type: 'Generation', value: gen },
-              { trait_type: 'Gender', value: sex == 0 ? 'Female' : 'Male' },
+              {
+                display_type: 'number',
+                trait_type: 'Generation',
+                value: gen,
+              },
+              {
+                trait_type: 'Gender',
+                value: sex == 0 ? 'Female' : 'Male',
+              },
               {
                 trait_type: 'Parent 1',
                 value: breed1 == null ? '' : `WHCC #${breed1}`,
@@ -169,14 +176,11 @@ async function load() {
       img = d;
     }
   );
-  /*if (ethereum)*/ web3 = new Web3(ethereum);
-  web3.setProvider(ethereum);
-  web3.eth.setProvider(ethereum);
-  /*else {
-    web3 = new Web3(
-      'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
-    );
-  }*/
+  if (ethereum) web3 = new Web3(ethereum);
+  else {
+    $('#connect').html('Please install Metamask');
+    return;
+  }
   acct = await ethereum.request({ method: 'eth_requestAccounts' });
   if ((await web3.eth.net.getId()) != 4) {
     //DEPLOYMENT change this and the one below to 1 as mainnet
@@ -210,7 +214,6 @@ async function load() {
     );
     $('#connect').hide();
   }
-  loadMyOwl();
 }
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
