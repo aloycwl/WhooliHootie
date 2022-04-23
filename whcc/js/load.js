@@ -165,7 +165,7 @@ async function BREED() {
   }
   await getCID();
   await contract.methods.BREED(breed1, breed2, sex, cid).send({
-    from: await acct[0],
+    from: acct[0],
   });
   location.reload();
 }
@@ -176,7 +176,7 @@ async function load() {
       img = d;
     }
   );
-  if (ethereum) web3 = new Web3(ethereum);
+  if (ethereum) web3 = new Web3(window.ethereum);
   else {
     $('#connect').html('Please install Metamask');
     return;
