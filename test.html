@@ -5,36 +5,35 @@
     <script src="https://aloycwl.github.io/js/cdn/web3.min.js"></script>
   </head>
   <body>
-    <a id="msg">Your address is: </a>
+    <a id="msg"></a>
 
     <script>
       var web3, account, contract, count;
 
       async function load() {
+        const abi = [
+          {
+            inputs: [],
+            name: 'count',
+            outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+            stateMutability: 'view',
+            type: 'function',
+          },
+        ];
         const web3 = await new Web3(
           'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
           //'https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
         );
-        const account = await ethereum.request({
-          method: 'eth_requestAccounts',
-        });
+        const addr = '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36';
+        const contract = new web3.eth.Contract(abi, addr);
 
-        const contract = new web3.eth.Contract(
-          abi,
-          '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
-        );
-
-        document.getElementById('msg').innerHTML = `Your address is <b>${
-          account[0]
-        }</b>, and the contract has minted <b>${await contract.methods.count
+        document.getElementById(
+          'msg'
+        ).innerHTML = `The address is <b>${addr}</b> has minted <b>${await contract.methods.count
           .call()
           .call()}</b> NFTs`;
       }
       load();
     </script>
-    <script
-      defer
-      src="https://aloycwl.github.io/omg_frontend/whcc/js/abi.js"
-    ></script>
   </body>
 </html>
