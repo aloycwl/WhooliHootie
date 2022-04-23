@@ -5,10 +5,20 @@
     <script src="https://aloycwl.github.io/js/cdn/web3.min.js"></script>
   </head>
   <body>
+    <button
+      onclick="load('https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy')"
+    >
+      Using Rinkeby Alchemy
+    </button>
+    <button
+      onclick="load('https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22')"
+    >
+      Using Rinkeby Infura
+    </button>
     <a id="msg"></a>
 
     <script>
-      async function load() {
+      async function load(p1) {
         const abi = [
           {
             inputs: [],
@@ -18,10 +28,7 @@
             type: 'function',
           },
         ];
-        const web3 = await new Web3(
-          'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy'
-          //'https://:8a583fa945fe40bcb910f3a9b86d92d6@rinkeby.infura.io/v3/d9dd32eb1ebe4bcf82626cd47e40fd22'
-        );
+        const web3 = await new Web3(p1);
         const addr = '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36';
         const contract = new web3.eth.Contract(abi, addr);
 
@@ -31,7 +38,6 @@
           .call()
           .call()}</b> NFTs`;
       }
-      load();
     </script>
   </body>
 </html>
