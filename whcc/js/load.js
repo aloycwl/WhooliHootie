@@ -1,4 +1,4 @@
-//p1,p2,time,gen,sex,id,breed,img
+//p1,p2,time,gen,sex,id,breed,img [DEPLOYMENT: set price, set mainnet]
 var nfts,
   breed1,
   breed2,
@@ -37,33 +37,32 @@ async function loadMyOwl() {
   }
 }
 async function loadImg(p1) {
-  //add for breeding, hide the rest of it
-  var s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`;
-  if ($('#breed1').is(':empty')) {
+  var s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`,
+  if (breed1 == null) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
     hideOwls(p1);
-  } else if ($('#breed2').is(':empty')) {
+  } else if (breed2 == null) {
     $('#breed2').html(s1);
     breed2 = nfts[5][p1];
     hideOwls(p1);
   } else return;
-  if (!$('#breed1').is(':empty') && !$('#breed2').is(':empty')) {
+  if (breed1>0 && breed2>0) {
     $('#breed').show();
     await contract
       .gen(parseInt(nfts[3][p1]) + 1)
       .call()
       .then((d) => {
-        $('#lblBreed').html(`(${d[1]}/${d[0]})`);
+        $('#breed').append(` (${d[1]}/${d[0]})`);
       });
     gen = parseInt(nfts[3][p1]) + 1;
   }
 }
 async function hideOwls(p1) {
-  var p2 = nfts[1][i],
-    p3 = nfts[0][i],
-    p4 = nfts[5][p1];
   for (let i = 0; i < nfts[0].length; i++) {
+    var p2 = nfts[1][i],
+      p3 = nfts[0][i],
+      p4 = nfts[5][p1];
     if (nfts[4][i] == nfts[4][p1] || nfts[3][i] != nfts[3][p1])
       $('#o' + nfts[5][i]).hide();
     if (p3 == p4) $(`#o${p2}`).hide();
@@ -71,13 +70,10 @@ async function hideOwls(p1) {
   }
 }
 async function unloadImg() {
-  //reset to select others for breeding
   $('#breed1').empty();
   $('#breed2').empty();
-  $('#lblBreed').empty();
-  breed1 = null;
-  breed2 = null;
-  $('#breed').hide();
+  $('#breed').html('BREED');
+  breed1 = breed2 = null;
   for (let i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
 async function getCID() {
@@ -121,7 +117,7 @@ async function MINT() {
   await getCID();
   await contract.MINT(sex, cid).send({
     from: acct[0],
-    value: 0, //0.88e18, DEPLOYMENT
+    value: 0,
   });
   location.reload();
 }
@@ -142,7 +138,6 @@ async function load() {
   if (ethereum) {
     web3 = new Web3(ethereum);
     acct = await ethereum.request({ method: 'eth_requestAccounts' });
-    //DEPLOYMENT change this and the one below to 1 as mainnet
     if ((await web3.eth.net.getId()) != 4) {
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
@@ -172,7 +167,6 @@ async function load() {
   } else $('#connect').html('No Metamask');
 }
 async function isWeb3() {
-  //to check if metamask is connected or disconnnected
   await web3.eth.getAccounts().then((d) => {
     if (d.length > 0) {
       $('#connect').hide();
