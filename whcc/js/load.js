@@ -1,11 +1,4 @@
-var myWHp1,
-  myWHp2,
-  myWHtime,
-  myWHgen,
-  myWHsex,
-  myWHid,
-  myWHbreed,
-  myWHimg = new Array(),
+var nfts, //p1,p2,time,gen,sex,id,breed,img
   breed1,
   breed2,
   gen,
@@ -18,35 +11,25 @@ var myWHp1,
   img;
 
 async function loadMyOwl() {
-  await contract.methods
-    .PLAYERITEMS(acct[0])
-    .call()
-    .then((d) => {
-      myWHp1 = d[0];
-      myWHp2 = d[1];
-      myWHtime = d[2];
-      myWHgen = d[3];
-      myWHsex = d[4];
-      myWHid = d[5];
-      myWHbreed = d[6];
-    });
-  for (let i = 0; i < myWHid.length; i++) {
-    myWHimg[i] = img[myWHgen[i]][myWHsex[i]];
+  nfts = await contract.methods.PLAYERITEMS(acct[0]).call();
+  nfts[7] = new Array();
+  for (let i = 0; i < nfts[0].length; i++) {
+    nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
     $('#myWH').append(
-      `<p id="o${myWHid[i]}" class="boxnft"><b>Whooli Hootie #${
-        myWHid[i]
-      }</b><br/>Parents : ${myWHp1[i]} + ${myWHp2[i]}<br/>Last breeded: ${
-        myWHtime[i] > 0
-          ? moment(moment.unix(myWHtime[i])).fromNow()
+      `<p id="o${nfts[5][i]}" class="boxnft"><b>Whooli Hootie #${
+        nfts[5][i]
+      }</b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded: ${
+        nfts[2][i] > 0
+          ? moment(moment.unix(nfts[2][i])).fromNow()
           : 'Since forever'
-      }<br/>Generation: ${myWHgen[i]} (${
-        myWHsex[i] == 0 ? 'Female' : 'Male'
+      }<br/>Generation: ${nfts[3][i]} (${
+        nfts[4][i] == 0 ? 'Female' : 'Male'
       })<br/><video autoplay loop muted src="https://ipfs.io/ipfs/${
-        myWHimg[i]
+        nfts[7][i]
       }${
         moment
-          .duration(moment().diff(moment(moment.unix(myWHtime[i]))))
-          .asSeconds() > /*60480*/ 0 && myWHbreed[i] == 1
+          .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
+          .asSeconds() > /*60480*/ 0 && nfts[6][i] == 1
           ? `" onclick="loadImg(${i})" class="nft`
           : `" class="nobreed`
       }"></video></p> `
@@ -55,34 +38,34 @@ async function loadMyOwl() {
 }
 async function loadImg(p1) {
   //add for breeding, hide the rest of it
-  const s1 = `<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/${myWHimg[p1]}" class="nft"></video>`;
+  const s1 = `<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/${nfts[7][p1]}" class="nft"></video>`;
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
-    breed1 = myWHid[p1];
+    breed1 = nfts[5][p1];
     hideOwls(p1);
   } else if ($('#breed2').is(':empty')) {
     $('#breed2').html(s1);
-    breed2 = myWHid[p1];
+    breed2 = nfts[5][p1];
     hideOwls(p1);
   } else return;
   if (!$('#breed1').is(':empty') && !$('#breed2').is(':empty')) {
     $('#breed').show();
     await contract.methods
-      .gen(parseInt(myWHgen[p1]) + 1)
+      .gen(parseInt(nfts[3][p1]) + 1)
       .call()
       .then((d) => {
         $('#lblBreed').html(`(${d[1]}/${d[0]})`);
       });
-    gen = parseInt(myWHgen[p1]) + 1;
+    gen = parseInt(nfts[3][p1]) + 1;
   }
 }
 async function hideOwls(p1) {
   //breeding hide function
-  for (let i = 0; i < myWHid.length; i++) {
-    if (myWHsex[i] == myWHsex[p1] || myWHgen[i] != myWHgen[p1])
-      $('#o' + myWHid[i]).hide();
-    if (myWHp1[i] == myWHid[p1]) $(`#o${myWHp2[i]}`).hide();
-    if (myWHp2[i] == myWHid[p1]) $(`#o${myWHp1[i]}`).hide();
+  for (let i = 0; i < nfts[0].length; i++) {
+    if (nfts[4][i] == nfts[4][p1] || nfts[3][i] != nfts[3][p1])
+      $('#o' + nfts[5][i]).hide();
+    if (nfts[0][i] == nfts[5][p1]) $(`#o${nfts[1][i]}`).hide();
+    if (nfts[1][i] == nfts[5][p1]) $(`#o${nfts[0][i]}`).hide();
   }
 }
 async function unloadImg() {
@@ -93,7 +76,7 @@ async function unloadImg() {
   breed1 = null;
   breed2 = null;
   $('#breed').hide();
-  for (let i = 0; i < myWHid.length; i++) $('#o' + myWHid[i]).show();
+  for (let i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
 async function getCID() {
   const ipfs = IpfsApi({
