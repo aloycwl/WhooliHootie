@@ -37,7 +37,7 @@ async function loadMyOwl() {
   }
 }
 async function loadImg(p1) {
-  var s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`,
+  var s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`;
   if (breed1 == null) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
@@ -47,16 +47,14 @@ async function loadImg(p1) {
     breed2 = nfts[5][p1];
     hideOwls(p1);
   } else return;
-  if (breed1>0 && breed2>0) {
-    $('#breed').show();
+  if (breed1 > 0 && breed2 > 0)
     await contract
       .gen(parseInt(nfts[3][p1]) + 1)
       .call()
       .then((d) => {
-        $('#breed').append(` (${d[1]}/${d[0]})`);
+        $('#breed').html(`BREED (${d[1]}/${d[0]})`);
       });
-    gen = parseInt(nfts[3][p1]) + 1;
-  }
+  gen = parseInt(nfts[3][p1]) + 1;
 }
 async function hideOwls(p1) {
   for (let i = 0; i < nfts[0].length; i++) {
@@ -72,7 +70,7 @@ async function hideOwls(p1) {
 async function unloadImg() {
   $('#breed1').empty();
   $('#breed2').empty();
-  $('#breed').html('BREED');
+  $('#breed').html('');
   breed1 = breed2 = null;
   for (let i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
