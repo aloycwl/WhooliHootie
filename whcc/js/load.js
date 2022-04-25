@@ -29,7 +29,7 @@ async function loadMyOwl() {
 }
 async function loadImg(p1) {
   //add for breeding, hide the rest of it
-  const s1 = `<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/${nfts[7][p1]}" class="nft"></video>`;
+  var s1 = `<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/${nfts[7][p1]}" class="nft"></video>`;
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
@@ -70,22 +70,22 @@ async function unloadImg() {
   for (let i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
 async function getCID() {
-  const ipfs = IpfsApi({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'https',
-  });
   sex = Math.floor(Math.random() * 2);
-  const pro = await new Promise((d) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
-        d(files);
-      });
-    };
-    reader.readAsArrayBuffer(
-      new File(
-        [
+  var ipfs = IpfsApi({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+    }),
+    pro = await new Promise((d) => {
+      var reader = new FileReader();
+      reader.onloadend = () => {
+        ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
+          d(files);
+        });
+      };
+      reader.readAsArrayBuffer(
+        new File(
+          [
             `"name":"Whooli Hootie #${parseInt(count) + 1}",
             "description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!",
             "animation_url":"ipfs://${img[gen][sex]}"
@@ -101,23 +101,23 @@ async function getCID() {
               },
               {
                 "trait_type":"Parent 1",
-                "value":${breed1 == null ? '' : 'WHCC #'+breed1}"
+                "value":${breed1 == null ? '' : 'WHCC #' + breed1}"
               },
               {
                 "trait_type":"Parent 2"
-                "value":${breed2 == null ? '' : 'WHCC #'+breed2}"
+                "value":${breed2 == null ? '' : 'WHCC #' + breed2}"
               },
               {
                 "display_type":"date",
                 "trait_type":"Hatched on",
                 "value":${Date.now()}
               }
-            ]`
-        ],
-        'application/json'
-      )
-    );
-  });
+            ]`,
+          ],
+          'application/json'
+        )
+      );
+    });
   return pro[0].hash;
 }
 async function MINT() {
@@ -165,7 +165,7 @@ async function load() {
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
-    const d = await contract.methods.gen(1).call();
+    var d = await contract.methods.gen(1).call();
     count = await contract.methods.count.call().call();
     owlWallet = (await contract2.methods.balanceOf(acct[0]).call()) / 1e18;
     $('#mint').append(`${d[1]} / ${d[0]})`);
