@@ -7,7 +7,7 @@ async function loadNFTs() {
     `Wood: ${res[0]}<br>Metal: ${res[1]}<br>Food: ${res[2]}<br>Owl: ${res[3]}<br>Soldier: ${res[4]}`
   );
   items = await contract.PLAYERITEMS(acct[0]).call();
-  await $.getJSON('js/img.json', function (d) {
+  await $.getJSON('js/img.min.json', function (d) {
     img = d;
   });
   for (let i = 0; i < items[0].length; i++)
