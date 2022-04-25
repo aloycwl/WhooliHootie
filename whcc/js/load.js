@@ -152,8 +152,8 @@ async function load() {
   if (ethereum) {
     web3 = new Web3(ethereum);
     acct = await ethereum.request({ method: 'eth_requestAccounts' });
+    //DEPLOYMENT change this and the one below to 1 as mainnet
     if ((await web3.eth.net.getId()) != 4) {
-      //DEPLOYMENT change this and the one below to 1 as mainnet
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x4' }],
@@ -164,19 +164,15 @@ async function load() {
       abi,
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
-    await contract.methods
-      .gen(1)
-      .call()
-      .then((d) => {
-        $('#mint').append(`${d[1]} / ${d[0]} )`);
-      });
-    count = await contract.methods.count.call().call();
     // get token balance
     contract2 = new web3.eth.Contract(
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
+    const d = await contract.methods.gen(1).call();
+    count = await contract.methods.count.call().call();
     owlWallet = (await contract2.methods.balanceOf(acct[0]).call()) / 1e18;
+    $('#mint').append(`${d[1]} / ${d[0]})`);
     $('#name').append(
       `${
         (await contract.methods.getBalance.call().call()) / 1e18
