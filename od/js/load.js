@@ -1,4 +1,4 @@
-//wood, metal, food, owl, soldier
+//wood, metal, food, owl, soldier [DEVELOPMENT: set minting fee]
 var acct, res, items, img, loaded;
 
 async function loadNFTs() {
@@ -36,15 +36,16 @@ async function ATTACK() {
 }
 async function load() {
   web3 = new Web3(ethereum);
+  web3 = web3.eth;
   acct = await window.ethereum.request({ method: 'eth_requestAccounts' });
-  if ((await web3.eth.net.getId()) != 4) {
+  if ((await web3.net.getId()) != 4) {
     await ethereum.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: '0x4' }],
     });
     location.reload();
   } else {
-    contract = new web3.eth.Contract(
+    contract = new web3.Contract(
       abi,
       '0x9Bc8cDA64E91f3D3aED509278Eea321BF54f2B95'
     );
@@ -52,7 +53,7 @@ async function load() {
   }
 }
 async function isWeb3() {
-  await web3.eth.getAccounts().then((d) => {
+  await web3.getAccounts().then((d) => {
     if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();

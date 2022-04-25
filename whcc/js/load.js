@@ -131,20 +131,21 @@ async function load() {
   });
   if (ethereum) {
     web3 = new Web3(ethereum);
+    web3 = web3.eth;
     acct = await ethereum.request({ method: 'eth_requestAccounts' });
-    if ((await web3.eth.net.getId()) != 4) {
+    if ((await web3.net.getId()) != 4) {
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x4' }],
       });
       location.reload();
     }
-    contract = new web3.eth.Contract(
+    contract = new web3.Contract(
       abi,
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
     contract = contract.methods;
-    contract2 = new web3.eth.Contract(
+    contract2 = new web3.Contract(
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
@@ -161,7 +162,7 @@ async function load() {
   } else $('#connect').html('No Metamask');
 }
 async function isWeb3() {
-  await web3.eth.getAccounts().then((d) => {
+  await web3.getAccounts().then((d) => {
     if (d.length > 0) {
       $('#connect').hide();
       $('#root').show();
