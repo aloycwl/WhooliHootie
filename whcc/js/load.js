@@ -1,5 +1,16 @@
 //p1,p2,time,gen,sex,id,breed,img
-var nfts, breed1, breed2, gen, sex, cid, count, acct, loaded, owlWallet, img;
+var nfts,
+  breed1,
+  breed2,
+  gen,
+  sex,
+  cid,
+  count,
+  acct,
+  loaded,
+  owlWallet,
+  img,
+  src = 'https://ipfs.io/ipfs/';
 
 async function loadMyOwl() {
   nfts = await contract.PLAYERITEMS(acct[0]).call();
@@ -15,9 +26,7 @@ async function loadMyOwl() {
           : 'Since forever'
       }<br/>Generation: ${nfts[3][i]} (${
         nfts[4][i] == 0 ? 'Female' : 'Male'
-      })<br/><video autoplay loop muted src="https://ipfs.io/ipfs/${
-        nfts[7][i]
-      }${
+      })<br/><video autoplay loop muted src="${src}${nfts[7][i]}${
         moment
           .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
           .asSeconds() > /*60480*/ 0 && nfts[6][i] == 1
@@ -29,7 +38,7 @@ async function loadMyOwl() {
 }
 async function loadImg(p1) {
   //add for breeding, hide the rest of it
-  var s1 = `<video autoplay loop muted onclick="unloadImg()" src="https://ipfs.io/ipfs/${nfts[7][p1]}" class="nft"></video>`;
+  var s1 = `<video autoplay loop muted onclick="unloadImg()" src="${src}${nfts[7][p1]}" class="nft"></video>`;
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
@@ -125,12 +134,9 @@ async function BREED() {
   }
 }
 async function load() {
-  img = $.getJSON(
-    'https://aloycwl.github.io/omg_frontend/whcc/js/img.min.json',
-    function (d) {
-      img = d;
-    }
-  );
+  img = $.getJSON('js/img.min.json', function (d) {
+    img = d;
+  });
   if (ethereum) {
     web3 = new Web3(ethereum);
     acct = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -161,7 +167,7 @@ async function load() {
       } balance. Owl Wallet: ${owlWallet}`
     );
     $('#connect').hide();
-  } else $('#connect').html('Please install Metamask');
+  } else $('#connect').html('No Metamask');
 }
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
