@@ -60,12 +60,14 @@ async function loadImg(p1) {
   }
 }
 async function hideOwls(p1) {
-  //breeding hide function
+  var p2 = nfts[1][i],
+    p3 = nfts[0][i],
+    p4 = nfts[5][p1];
   for (let i = 0; i < nfts[0].length; i++) {
     if (nfts[4][i] == nfts[4][p1] || nfts[3][i] != nfts[3][p1])
       $('#o' + nfts[5][i]).hide();
-    if (nfts[0][i] == nfts[5][p1]) $(`#o${nfts[1][i]}`).hide();
-    if (nfts[1][i] == nfts[5][p1]) $(`#o${nfts[0][i]}`).hide();
+    if (p3 == p4) $(`#o${p2}`).hide();
+    if (p2 == p4) $(`#o${p3}`).hide();
   }
 }
 async function unloadImg() {
