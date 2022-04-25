@@ -111,7 +111,7 @@ async function MINT() {
   await getCID();
   await contract.MINT(sex, cid).send({
     from: acct[0],
-    value: 0,
+    value: 0.0e18,
   });
   location.reload();
 }
