@@ -44,7 +44,7 @@ async function loadImg(p1) {
   } else if (breed2 == null) {
     $('#breed2').html(s1);
     breed2 = nfts[5][p1];
-  } ;
+  }
   for (let i = 0; i < nfts[0].length; i++) {
     var p2 = nfts[1][i],
       p3 = nfts[0][i],
