@@ -121,7 +121,7 @@ async function getCID() {
       )
     );
   });
-  cid = pro[0].hash;
+  return pro[0].hash;
 }
 async function MINT() {
   gen = 1;
@@ -133,15 +133,14 @@ async function MINT() {
   location.reload();
 }
 async function BREED() {
-  if (owlWallet < 30) {
-    $('#breed').html(`Insufficient OWL Token`);
-    return;
+  if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
+  else {
+    await getCID();
+    await contract.methods.BREED(breed1, breed2, sex, cid).send({
+      from: acct[0],
+    });
+    location.reload();
   }
-  await getCID();
-  await contract.methods.BREED(breed1, breed2, sex, cid).send({
-    from: acct[0],
-  });
-  location.reload();
 }
 async function load() {
   img = $.getJSON(
@@ -150,20 +149,17 @@ async function load() {
       img = d;
     }
   );
-  if (ethereum) web3 = new Web3(ethereum);
-  else {
-    $('#connect').html('Please install Metamask');
-    return;
-  }
-  acct = await ethereum.request({ method: 'eth_requestAccounts' });
-  if ((await web3.eth.net.getId()) != 4) {
-    //DEPLOYMENT change this and the one below to 1 as mainnet
-    await ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId: '0x4' }],
-    });
-    location.reload();
-  } else {
+  if (ethereum) {
+    web3 = new Web3(ethereum);
+    acct = await ethereum.request({ method: 'eth_requestAccounts' });
+    if ((await web3.eth.net.getId()) != 4) {
+      //DEPLOYMENT change this and the one below to 1 as mainnet
+      await ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: '0x4' }],
+      });
+      location.reload();
+    }
     contract = new web3.eth.Contract(
       abi,
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
@@ -187,7 +183,7 @@ async function load() {
       } balance. Owl Wallet: ${owlWallet}`
     );
     $('#connect').hide();
-  }
+  } else $('#connect').html('Please install Metamask');
 }
 async function isWeb3() {
   //to check if metamask is connected or disconnnected
