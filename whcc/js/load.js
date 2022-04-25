@@ -2,7 +2,7 @@
 var nfts, breed1, breed2, gen, sex, cid, count, acct, loaded, owlWallet, img;
 
 async function loadMyOwl() {
-  nfts = await contract.methods.PLAYERITEMS(acct[0]).call();
+  nfts = await contract.PLAYERITEMS(acct[0]).call();
   nfts[7] = new Array();
   for (let i = 0; i < nfts[0].length; i++) {
     nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
@@ -41,7 +41,7 @@ async function loadImg(p1) {
   } else return;
   if (!$('#breed1').is(':empty') && !$('#breed2').is(':empty')) {
     $('#breed').show();
-    await contract.methods
+    await contract
       .gen(parseInt(nfts[3][p1]) + 1)
       .call()
       .then((d) => {
@@ -108,7 +108,7 @@ async function getCID() {
 async function MINT() {
   gen = 1;
   await getCID();
-  await contract.methods.MINT(sex, cid).send({
+  await contract.MINT(sex, cid).send({
     from: acct[0],
     value: 0, //0.88e18, DEPLOYMENT
   });
@@ -118,7 +118,7 @@ async function BREED() {
   if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
   else {
     await getCID();
-    await contract.methods.BREED(breed1, breed2, sex, cid).send({
+    await contract.BREED(breed1, breed2, sex, cid).send({
       from: acct[0],
     });
     location.reload();
@@ -146,17 +146,18 @@ async function load() {
       abi,
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
+    contract = contract.methods;
     contract2 = new web3.eth.Contract(
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
-    var d = await contract.methods.gen(1).call();
-    count = await contract.methods.count.call().call();
+    var d = await contract.gen(1).call();
+    count = await contract.count.call().call();
     owlWallet = (await contract2.methods.balanceOf(acct[0]).call()) / 1e18;
     $('#mint').append(`${d[1]} / ${d[0]})`);
     $('#name').append(
       `${
-        (await contract.methods.getBalance.call().call()) / 1e18
+        (await contract.getBalance.call().call()) / 1e18
       } balance. Owl Wallet: ${owlWallet}`
     );
     $('#connect').hide();
