@@ -7,7 +7,7 @@ async function loadMyOwl() {
   for (let i = 0; i < nfts[0].length; i++) {
     nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
     $('#myWH').append(
-      `<p id="o${nfts[5][i]}" class="boxnft"><b>Whooli Hootie #${
+      `<p id="o${nfts[5][i]}"class="boxnft"><b>Whooli Hootie #${
         nfts[5][i]
       }</b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded: ${
         nfts[2][i] > 0
@@ -21,8 +21,8 @@ async function loadMyOwl() {
         moment
           .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
           .asSeconds() > /*60480*/ 0 && nfts[6][i] == 1
-          ? `" onclick="loadImg(${i})" class="nft`
-          : `" class="nobreed`
+          ? `"onclick="loadImg(${i})"class="nft`
+          : `"class="nobreed`
       }"></video></p> `
     );
   }
