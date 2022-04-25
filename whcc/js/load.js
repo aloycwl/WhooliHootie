@@ -38,7 +38,7 @@ async function loadMyOwl() {
 }
 async function loadImg(p1) {
   //add for breeding, hide the rest of it
-  var s1 = `<video autoplay loop muted onclick="unloadImg()" src="${src}${nfts[7][p1]}" class="nft"></video>`;
+  var s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`;
   if ($('#breed1').is(':empty')) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
