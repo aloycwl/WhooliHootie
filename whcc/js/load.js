@@ -86,36 +86,33 @@ async function getCID() {
     reader.readAsArrayBuffer(
       new File(
         [
-          JSON.stringify({
-            name: `Whooli Hootie #${parseInt(count) + 1}`,
-            description:
-              'We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!',
-            animation_url: `ipfs://${img[gen][sex]}`,
-            attributes: [
+            `"name":"Whooli Hootie #${parseInt(count) + 1}",
+            "description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!",
+            "animation_url":"ipfs://${img[gen][sex]}"
+            "attributes":[
               {
-                display_type: 'number',
-                trait_type: 'Generation',
-                value: gen,
+                "display_type":"number",
+                "trait_type":"Generation",
+                "value":${gen}
               },
               {
-                trait_type: 'Gender',
-                value: sex == 0 ? 'Female' : 'Male',
+                "trait_type":"Gender",
+                "value":"${sex == 0 ? 'Female' : 'Male'}"
               },
               {
-                trait_type: 'Parent 1',
-                value: breed1 == null ? '' : `WHCC #${breed1}`,
+                "trait_type":"Parent 1",
+                "value":${breed1 == null ? '' : 'WHCC #'+breed1}"
               },
               {
-                trait_type: 'Parent 2',
-                value: breed2 == null ? '' : `WHCC #${breed2}`,
+                "trait_type":"Parent 2"
+                "value":${breed2 == null ? '' : 'WHCC #'+breed2}"
               },
               {
-                display_type: 'date',
-                trait_type: 'Hatched on',
-                value: Date.now(),
-              },
-            ],
-          }),
+                "display_type":"date",
+                "trait_type":"Hatched on",
+                "value":${Date.now()}
+              }
+            ]`
         ],
         'application/json'
       )
