@@ -1,34 +1,19 @@
-var acct, wood, metal, food, owl, soldier, items, levels, img, loaded;
+//wood, metal, food, owl, soldier
+var acct, res, items, img, loaded;
 
 async function loadNFTs() {
-  await contract
-    .player(acct[0])
-    .call()
-    .then((d) => {
-      wood = d[0];
-      metal = d[1];
-      food = d[2];
-      owl = d[3];
-      soldier = d[4];
-    });
+  res = await contract.player(acct[0]).call();
   $('#resources').html(
-    `Wood: ${wood}<br>Metal: ${metal}<br>Food: ${food}<br>Owl: ${owl}<br>Soldier: ${soldier}`
+    `Wood: ${res[0]}<br>Metal: ${res[1]}<br>Food: ${res[2]}<br>Owl: ${res[3]}<br>Soldier: ${res[4]}`
   );
-  await contract
-    .PLAYERITEMS(acct[0])
-    .call()
-    .then((d) => {
-      items = d[0];
-      levels = d[1];
-    });
+  items = await contract.PLAYERITEMS(acct[0]).call();
   await $.getJSON('js/img.json', function (d) {
     img = d;
   });
-  for (let i = 0; i < items.length; i++) {
+  for (let i = 0; i < items[0].length; i++)
     $('#nfts').append(
-      `<img src="https://ipfs.io/ipfs/${img[items[i]][levels[i]]}"> `
+      `<img src="https://ipfs.io/ipfs/${img[items[0][i]][items[1][i]]}"> `
     );
-  }
 }
 async function MINT() {
   await contract.MINT($('#items').val()).send({
@@ -38,7 +23,15 @@ async function MINT() {
   location.reload();
 }
 async function CLAIM() {
-  await contract.MINT(acct[0]).send();
+  await contract.CLAIM(acct[0]).send({
+    from: acct[0],
+  });
+  location.reload();
+}
+async function ATTACK() {
+  await contract.CLAIM($('#txtAtk').val()).send({
+    from: acct[0],
+  });
   location.reload();
 }
 async function load() {
@@ -53,7 +46,7 @@ async function load() {
   } else {
     contract = new web3.eth.Contract(
       abi,
-      '0x539b76C8307d50a249C1c3E38fa660372bBc44B9'
+      '0x9Bc8cDA64E91f3D3aED509278Eea321BF54f2B95'
     );
     contract = contract.methods;
   }
