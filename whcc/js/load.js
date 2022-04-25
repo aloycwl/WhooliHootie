@@ -1,14 +1,5 @@
-var nfts, //p1,p2,time,gen,sex,id,breed,img
-  breed1,
-  breed2,
-  gen,
-  sex,
-  cid,
-  count,
-  acct,
-  loaded = false,
-  owlWallet,
-  img;
+//p1,p2,time,gen,sex,id,breed,img
+var nfts, breed1, breed2, gen, sex, cid, count, acct, loaded, owlWallet, img;
 
 async function loadMyOwl() {
   nfts = await contract.methods.PLAYERITEMS(acct[0]).call();
@@ -153,7 +144,7 @@ async function BREED() {
   location.reload();
 }
 async function load() {
-  await $.getJSON(
+  img = $.getJSON(
     'https://aloycwl.github.io/omg_frontend/whcc/js/img.min.json',
     function (d) {
       img = d;
