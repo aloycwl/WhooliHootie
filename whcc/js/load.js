@@ -164,7 +164,6 @@ async function load() {
       abi,
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
-    // get token balance
     contract2 = new web3.eth.Contract(
       abi2,
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
