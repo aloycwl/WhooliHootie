@@ -1,27 +1,38 @@
-<img
-  class="image"
-  src="https://i.picsum.photos/id/845/250/250.jpg?hmac=2l7QArh4UKul2qF-JvTjaBu3-WF2KpKBgpBALmFoxWY"
-/>
-<img
-  class="image"
-  src="https://i.picsum.photos/id/925/250/250.jpg?hmac=twWJdaKT46cPk1aNvB7aKdiLZoQ zvzu5VW85OEUO4ys"
-/>
-<canvas class="result"></canvas>
-<br />
-<button class="Btn">CLICK HERE</button>
-<h3>Click on the above button to combine the two images above together</h3>
+<script src="https://aloycwl.github.io/js/cdn/jquery.min.js"></script>
+
+<img id="img1" src="https://aloycwl.github.io/omg_frontend/1.png" />
+<img id="img2" src="https://aloycwl.github.io/omg_frontend/2.png" />
+<canvas id="result"></canvas>
+<script defer>
+  document.getElementById('result').width = $('#img1').width();
+  document.getElementById('result').height = $('#img1').height();
+
+  document
+    .getElementById('result')
+    .getContext('2d')
+    .drawImage(document.getElementById('img2'), 0, 0);
+  document
+    .getElementById('result')
+    .getContext('2d')
+    .drawImage(document.getElementById('img1'), 0, 0);
+</script>
+
+<br /><br />
+
+<canvas id="myCanvas"></canvas>
 <script>
-  let imgEle1 = document.querySelectorAll('.image')[0];
-  let imgEle2 = document.querySelectorAll('.image')[1];
-  let resEle = document.querySelector('.result');
-  var context = resEle.getContext('2d');
-  let BtnEle = document.querySelector('.Btn');
-  BtnEle.addEventListener('click', () => {
-    resEle.width = imgEle1.width;
-    resEle.height = imgEle1.height;
-    context.globalAlpha = 1.0;
-    context.drawImage(imgEle1, 0, 0);
-    context.globalAlpha = 0.5;
-    context.drawImage(imgEle2, 0, 0);
-  });
+  var c = document.getElementById('myCanvas');
+  var ctx = c.getContext('2d');
+  var imageObj1 = new Image();
+  var imageObj2 = new Image();
+  imageObj1.src = '1.png';
+  imageObj1.onload = function () {
+    ctx.drawImage(imageObj1, 0, 0, 328, 526);
+    imageObj2.src = '2.png';
+    imageObj2.onload = function () {
+      ctx.drawImage(imageObj2, 15, 85, 300, 300);
+      var img = c.toDataURL('image/png');
+      document.write('<img src="' + img + '" width="328" height="526"/>');
+    };
+  };
 </script>
