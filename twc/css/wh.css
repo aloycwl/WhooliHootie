@@ -1,0 +1,14 @@
+.nft,
+a {
+  cursor: pointer;
+}
+.boxnft {
+  display: inline-block;
+  text-align: center;
+}
+.nobreed {
+  opacity: 0.5;
+}
+.hide {
+  display: none;
+}
