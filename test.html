@@ -1,34 +1,65 @@
 <script src="https://aloycwl.github.io/js/cdn/jquery.min.js"></script>
 <script src="https://aloycwl.github.io/js/cdn/ipfs-api.min.js"></script>
 
-<canvas id="myCanvas" width="100" height="100" style="display: none"></canvas>
-<img id="iii" width="400" height="400" />
+<canvas id="myCanvas" width="100" height="100"></canvas>
 <script>
   var c = document.getElementById('myCanvas'),
-    imageObj1 = new Image(),
-    imageObj2 = new Image();
-  imageObj1.setAttribute('crossorigin', 'anonymous');
-  imageObj1.src = 'https://aloycwl.github.io/omg_frontend/1.png';
-  c.getContext('2d').drawImage(imageObj1, 0, 0);
-  imageObj2.setAttribute('crossorigin', 'anonymous');
-  imageObj2.src = 'https://aloycwl.github.io/omg_frontend/2.png';
-  c.getContext('2d').drawImage(imageObj2, 0, 0);
-  $('#iii').attr('src', c.toDataURL('image/png'));
+    cd = c.getContext('2d'); /*,
+    i1 = new Image(),
+    i2 = new Image();
+  i1.setAttribute('crossorigin', 'anonymous');
+  i1.src = 'https://aloycwl.github.io/js/Examples/IFPS_Upload_Canvas_0.png';
+  cd.drawImage(i1, 0, 0);
+  i2.setAttribute('crossorigin', 'anonymous');
+  i2.src = 'https://aloycwl.github.io/js/Examples/IFPS_Upload_Canvas_.png';
+  cd.drawImage(i2, 0, 0);*/
+  var img1 = li(
+      'https://aloycwl.github.io/js/Examples/IFPS_Upload_Canvas_0.png',
+      draw
+    ),
+    img2 = li(
+      'https://aloycwl.github.io/js/Examples/IFPS_Upload_Canvas_1.png',
+      draw
+    ),
+    iled = 0;
+  function draw() {
+    iled++;
+    if (iled == 2) {
+      cd.drawImage(img1, 0, 0);
+      cd.drawImage(img2, 0, 0);
+    }
+  }
+  function li(src, onload) {
+    var img = new Image();
+    img.onload = onload;
+    img.src = src;
+    return img;
+  }
+  function dataURLtoFile(dataurl) {
+    var b64 = atob(dataurl.split(',')[1]),
+      n = b64.length,
+      u8 = new Uint8Array(n);
+    while (n--) u8[n] = b64.charCodeAt(n);
+
+    return new File([u8], '0.png', { type: 'image/png' });
+  }
 
   async function load() {
-    const pro = await new Promise((d) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
-          d(files);
-        });
-      };
-      reader.readAsArrayBuffer(
-        new File(document.getElementById('iii').src, 'image/png')
-      );
-    });
-    cid = pro[0].hash;
+    var ipfs = IpfsApi({
+        host: 'ipfs.infura.io',
+        port: 5001,
+        protocol: 'https',
+      }),
+      pro = await new Promise((d) => {
+        var reader = new FileReader();
+        reader.onloadend = () => {
+          ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
+            d(files);
+          });
+        };
+        reader.readAsArrayBuffer(dataURLtoFile(c.toDataURL('image/png')));
+      });
+    console.log(pro[0].hash);
   }
   //load();
 </script>
-
