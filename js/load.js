@@ -130,16 +130,114 @@ async function load() {
       });
       location.reload();
     }
+    _u = 'uint256';
+    _ua = _u + '[]';
+    _s = 'string';
+    _f = 'function';
+    _d = 'address';
+    _b = 'balance';
+    _v = 'view';
+    _p = 'payable';
+    PS = {
+      internalType: _ua,
+      name: '',
+      type: _ua,
+    };
+    PT = {
+      internalType: _u,
+      name: 's',
+      type: _u,
+    };
+    PU = {
+      internalType: _s,
+      name: 'r',
+      type: _s,
+    };
+    PV = {
+      internalType: _u,
+      name: '',
+      type: _u,
+    };
     contract = new web3.Contract(
-      abi,
+      [
+        {
+          inputs: [
+            PT,
+            {
+              internalType: _u,
+              name: 'q',
+              type: _u,
+            },
+            {
+              internalType: _u,
+              name: 's',
+              type: _u,
+            },
+            PU,
+          ],
+          name: 'BREED',
+          outputs: [],
+          stateMutability: _p,
+          type: _f,
+        },
+        {
+          inputs: [PT, PU],
+          name: 'MINT',
+          outputs: [],
+          stateMutability: _p,
+          type: _f,
+        },
+        {
+          inputs: [],
+          name: 'count',
+          outputs: [PV],
+          stateMutability: _v,
+          type: _f,
+        },
+        {
+          inputs: [PV],
+          name: 'gen',
+          outputs: [PV, PV],
+          stateMutability: _v,
+          type: _f,
+        },
+        {
+          inputs: [],
+          name: 'getBalance',
+          outputs: [PV],
+          stateMutability: _v,
+          type: _f,
+        },
+        {
+          inputs: [
+            {
+              internalType: _d,
+              name: 'a',
+              type: _d,
+            },
+          ],
+          name: 'PLAYERITEMS',
+          outputs: [PS, PS, PS, PS, PS, PS, PS],
+          stateMutability: _v,
+          type: _f,
+        },
+      ],
       '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
     contract = contract.methods;
     contract2 = new web3.Contract(
-      abi2,
+      [
+        {
+          constant: true,
+          inputs: [{ name: '_owner', type: _d }],
+          name: _b + 'Of',
+          outputs: [{ name: _b, type: _u }],
+          type: _f,
+        },
+      ],
       '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
     );
-    var d = await contract.gen(1).call();
+    d = await contract.gen(1).call();
     count = await contract.count.call().call();
     owlWallet = (await contract2.methods.balanceOf(acct[0]).call()) / 1e18;
     $('#mint').append(`${d[1]} / ${d[0]})`);
