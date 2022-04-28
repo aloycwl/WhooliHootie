@@ -1,21 +1,11 @@
 //p1,p2,time,gen,sex,id,breed,img [DEPLOYMENT: set price, set mainnet]
-var nfts,
-  breed1,
-  breed2,
-  gen,
-  sex,
-  cid,
-  count,
-  acct,
-  loaded,
-  owlWallet,
-  img,
-  src = 'https://ipfs.io/ipfs/';
+var nfts, breed1, breed2, gen, sex, cid, count, acct, loaded, owlWallet, img;
+src = 'https://ipfs.io/ipfs/';
 
 async function loadMyOwl() {
   nfts = await contract.PLAYERITEMS(acct[0]).call();
   nfts[7] = new Array();
-  for (let i = 0; i < nfts[0].length; i++) {
+  for (i = 0; i < nfts[0].length; i++) {
     nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
     $('#myWH').append(
       `<p id="o${nfts[5][i]}"class="boxnft"><b>Whooli Hootie #${
@@ -37,7 +27,7 @@ async function loadMyOwl() {
   }
 }
 async function loadImg(p1) {
-  var s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`;
+  s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`;
   if (breed1 == null) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
@@ -45,10 +35,10 @@ async function loadImg(p1) {
     $('#breed2').html(s1);
     breed2 = nfts[5][p1];
   }
-  for (let i = 0; i < nfts[0].length; i++) {
-    var p2 = nfts[1][i],
-      p3 = nfts[0][i],
-      p4 = nfts[5][p1];
+  for (i = 0; i < nfts[0].length; i++) {
+    p2 = nfts[1][i];
+    p3 = nfts[0][i];
+    p4 = nfts[5][p1];
     if (nfts[4][i] == nfts[4][p1] || nfts[3][i] != nfts[3][p1])
       $('#o' + nfts[5][i]).hide();
     if (p3 == p4) $(`#o${p2}`).hide();
@@ -68,42 +58,42 @@ async function unloadImg() {
   $('#breed2').empty();
   $('#breed').html('');
   breed1 = breed2 = null;
-  for (let i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
+  for (i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
 async function getCID() {
   sex = Math.floor(Math.random() * 2);
-  var txt = '"trait_type":"',
-    ipfs = IpfsApi({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-    }),
-    pro = await new Promise((d) => {
-      var reader = new FileReader();
-      reader.onloadend = () => {
-        ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
-          d(files);
-        });
-      };
-      reader.readAsArrayBuffer(
-        new File(
-          [
-            `{"name":"Whooli Hootie #${
-              parseInt(count) + 1
-            }","description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!","animation_url":"ipfs://${
-              img[gen][sex]
-            }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
-              sex == 0 ? 'Female' : 'Male'
-            }"},{${txt}Parent 1","value":"${
-              breed1 == null ? '' : 'WHCC #' + breed1
-            }"},{${txt}Parent 2","value":"${
-              breed2 == null ? '' : 'WHCC #' + breed2
-            }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`,
-          ],
-          'application/json'
-        )
-      );
-    });
+  txt = '"trait_type":"';
+  ipfs = IpfsApi({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+  });
+  pro = await new Promise((d) => {
+    reader = new FileReader();
+    reader.onloadend = () => {
+      ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
+        d(files);
+      });
+    };
+    reader.readAsArrayBuffer(
+      new File(
+        [
+          `{"name":"Whooli Hootie #${
+            parseInt(count) + 1
+          }","description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!","animation_url":"ipfs://${
+            img[gen][sex]
+          }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
+            sex == 0 ? 'Female' : 'Male'
+          }"},{${txt}Parent 1","value":"${
+            breed1 == null ? '' : 'WHCC #' + breed1
+          }"},{${txt}Parent 2","value":"${
+            breed2 == null ? '' : 'WHCC #' + breed2
+          }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`,
+        ],
+        'application/json'
+      )
+    );
+  });
   cid = pro[0].hash;
 }
 async function MINT() {
