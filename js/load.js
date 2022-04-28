@@ -1,5 +1,5 @@
 //p1,p2,time,gen,sex,id,breed,img [DEPLOYMENT: set price, set mainnet]
-var nfts, breed1, breed2, gen, sex, cid, count, acct, loaded, owlWallet, img;
+var breed1, breed2, loaded;
 src = 'https://ipfs.io/ipfs/';
 
 async function loadMyOwl() {
