@@ -1,7 +1,6 @@
 //p1,p2,time,gen,sex,id,breed,img [DEPLOYMENT: set price, set mainnet]
 var breed1, breed2, loaded;
 src = 'https://ipfs.io/ipfs/';
-
 async function loadNFTs() {
   nfts = await contract.PLAYERITEMS(acct[0]).call();
   nfts[7] = new Array();

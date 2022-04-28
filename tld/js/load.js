@@ -3,9 +3,7 @@ var loaded;
 async function loadNFTs() {
   res = await cm.player(acct[0]).call();
   items = await cm.PLAYERITEMS(acct[0]).call();
-  await $.getJSON('js/img.min.json', function (d) {
-    img = d;
-  });
+  img = await $.getJSON('js/img.min.json');
   arr = new Array();
   await contract
     .getPastEvents('Transfer', {
