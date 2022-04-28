@@ -116,9 +116,7 @@ async function BREED() {
   }
 }
 async function load() {
-  img = $.getJSON('js/img.min.json', function (d) {
-    img = d;
-  });
+  img = await $.getJSON('js/img.min.json');
   if (ethereum) {
     web3 = new Web3(ethereum);
     web3 = web3.eth;
