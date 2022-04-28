@@ -2,7 +2,7 @@
 var breed1, breed2, loaded;
 src = 'https://ipfs.io/ipfs/';
 
-async function loadMyOwl() {
+async function loadNFTs() {
   nfts = await contract.PLAYERITEMS(acct[0]).call();
   nfts[7] = new Array();
   for (i = 0; i < nfts[0].length; i++) {
@@ -255,7 +255,7 @@ async function isWeb3() {
       $('#connect').hide();
       $('#root').show();
       if (!loaded) {
-        loadMyOwl();
+        loadNFTs();
         loaded = true;
       }
     } else {

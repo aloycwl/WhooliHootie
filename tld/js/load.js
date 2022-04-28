@@ -6,7 +6,6 @@ async function loadNFTs() {
   await $.getJSON('js/img.min.json', function (d) {
     img = d;
   });
-  s = '<br>Random addresses:<br>';
   arr = new Array();
   await contract
     .getPastEvents('Transfer', {
@@ -19,13 +18,14 @@ async function loadNFTs() {
         if (!arr.includes(e)) arr.push(e);
       });
     });
+  s = '<br>Random addresses:<br>';
   arr.forEach((e) => {
     s += `<a onclick="$(txtAtk).val('${e}')">${e}</a><br>`;
   });
   for (i = 0; i < items[0].length; i++)
     s += `<img src=https://ipfs.io/ipfs/${img[items[0][i]][items[1][i]]}> `;
   $('#res').html(
-    `Wood: ${res[0]} | Metal: ${res[1]} | Food: ${res[2]} | Owl: ${res[3]} | Soldier: ${res[4]}<br>${s}`
+    `Light: ${res[0]} | Water: ${res[1]} | Soil: ${res[2]} | Tea Leaf: ${res[3]} | Mosquito: ${res[4]}<br>${s}`
   );
 }
 function r() {
@@ -62,7 +62,145 @@ async function load() {
     r();
   } else {
     contract = new web3.Contract(
-      abi,
+      [
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'a',
+              type: 'address',
+            },
+          ],
+          name: 'ATTACK',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'a',
+              type: 'address',
+            },
+          ],
+          name: 'CLAIM',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'uint256',
+              name: '_i',
+              type: 'uint256',
+            },
+          ],
+          name: 'MINT',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'a',
+              type: 'address',
+            },
+          ],
+          name: 'PLAYERITEMS',
+          outputs: [
+            {
+              internalType: 'uint256[]',
+              name: '',
+              type: 'uint256[]',
+            },
+            {
+              internalType: 'uint256[]',
+              name: '',
+              type: 'uint256[]',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'a',
+              type: 'address',
+            },
+          ],
+          name: 'player',
+          outputs: [
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: 'address',
+              name: 'from',
+              type: 'address',
+            },
+            {
+              indexed: true,
+              internalType: 'address',
+              name: 'to',
+              type: 'address',
+            },
+            {
+              indexed: true,
+              internalType: 'uint256',
+              name: 'tokenId',
+              type: 'uint256',
+            },
+          ],
+          name: 'Transfer',
+          type: 'event',
+        },
+      ],
       '0x9Bc8cDA64E91f3D3aED509278Eea321BF54f2B95'
     );
   }
