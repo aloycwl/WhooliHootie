@@ -19,7 +19,7 @@ async function loadNFTs() {
         if (!arr.includes(e)) arr.push(e);
       });
     });
-  arr.forEach(async (e) => {
+  arr.forEach((e) => {
     s += `<a onclick="$(txtAtk).val('${e}')">${e}</a><br>`;
   });
   for (i = 0; i < items[0].length; i++)
