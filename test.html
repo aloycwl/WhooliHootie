@@ -13,11 +13,9 @@
           type: 'function',
         },
       ],
-      '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
+      '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
     );
-    document.write(
-      (await contract.methods.balanceOf(acct[0]).call()) / 10 ** 18
-    );
+    document.write(await contract.methods.balanceOf(acct[0]).call());
   }
   load();
 </script>
