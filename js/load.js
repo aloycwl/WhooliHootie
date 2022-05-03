@@ -125,7 +125,7 @@ async function BREED() {
   }
 }
 async function load() {
-  if (ethereum) {
+  if (typeof ethereum != 'undefined') {
     web3 = new Web3(ethereum);
     web3 = web3.eth;
     acct = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -253,24 +253,26 @@ async function load() {
       } balance. Owl Wallet: ${owlWallet}`
     );
     $('#connect').hide();
-  } else $('#connect').html('No Metamask');
+  }
 }
 async function isWeb3() {
-  await web3.getAccounts().then((d) => {
-    if (d.length > 0) {
-      $('#connect').hide();
-      $('#root').show();
-      if (!loaded) {
-        loadNFTs();
-        loaded = true;
+  if (typeof ethereum != 'undefined') {
+    await web3.getAccounts().then((d) => {
+      if (d.length > 0) {
+        $('#connect').hide();
+        $('#root').show();
+        if (!loaded) {
+          loadNFTs();
+          loaded = true;
+        }
+      } else {
+        $('#connect').show();
+        $('#root').hide();
+        $('#name').html(`<b>Whooli Hootie </b>`);
+        $('#mint').html('MINT (');
       }
-    } else {
-      $('#connect').show();
-      $('#root').hide();
-      $('#name').html(`<b>Whooli Hootie </b>`);
-      $('#mint').html('MINT (');
-    }
-  });
+    });
+  } else $('#connect').html('No Metamask');
 }
 setInterval(isWeb3, 1000);
 load();
