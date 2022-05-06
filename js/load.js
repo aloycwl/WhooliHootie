@@ -15,7 +15,7 @@ img = {
     2: 'bafkreidolppy562ee567myxwleww4hjadtre6t3q43pe4tmvsn4r3h2n7i',
   },
   2: {
-    0: 'bafkreihls74flpvqdxg2ckksqrpomea5kllfvsgpd5zq6drhjzukhscyu4',
+    0: 'bafkreicyt3paalz4kjzulaicxkfwa3bb7rjhplubrm63gifzxwkbzcrche',
     1: 'bafkreiecgao6l4osnnv4556yec363eogskt2lyesovugjjga66mryuzm5q',
     2: 'bafkreiav5lxuncubwx667nkisdyvxykhysmsnoagw4c7bgsgoll44au7cy',
   },
