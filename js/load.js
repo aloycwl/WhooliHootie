@@ -1,16 +1,23 @@
 //[DEPLOYMENT: set price, set mainnet]
-var breed1, breed2, loaded;
-src = 'https://ipfs.io/ipfs/';
+var breed1,
+  breed2,
+  loaded,
+  gen = 1,
+  src = 'https://ipfs.io/ipfs/';
 img = {
+  0: {
+    1: 'bafkreiekrovk2y2giv3obc3wlqgzof4w35kvggabqlegghujlvagbglc6y',
+    2: 'bafkreibhpstl6axw6gxjg3p5vcvmd4ub7ievsnn7kzh4v3cio77bi6p5li',
+  },
   1: {
-    0: 'bafkreicgffianjvmha4v352kqe7flizgmf2ozl6bddg4zk7xz6lrduktba',
-    1: 'bafybeidlm3qxalrtbpzr4kir2jvew2zih7reub6b4tng6mk6jb7al6r6va/10.webm',
-    2: 'bafybeifnpc7l2fy37cnjrtowayhp24etdcd3urayq4i4poeeuwvtqdgbhe/11.webm',
+    0: 'bafkreihls74flpvqdxg2ckksqrpomea5kllfvsgpd5zq6drhjzukhscyu4',
+    1: 'bafkreibfkmqhywmgu6bfecgwg3s5vs7fhcrb4w3r4hgki5acjxywur3po4',
+    2: 'bafkreidolppy562ee567myxwleww4hjadtre6t3q43pe4tmvsn4r3h2n7i',
   },
   2: {
     0: 'bafkreihls74flpvqdxg2ckksqrpomea5kllfvsgpd5zq6drhjzukhscyu4',
-    1: 'bafybeibogekdotq25jwoxzcpi2ec2edlni4rnuiczdtserbw5u4utrldp4/20.webm',
-    2: 'bafybeia455j47fygctqwovslyzxkag4gkdb5sr542an24xw5ylbxcfrnw4/21.webm',
+    1: 'bafkreiecgao6l4osnnv4556yec363eogskt2lyesovugjjga66mryuzm5q',
+    2: 'bafkreiav5lxuncubwx667nkisdyvxykhysmsnoagw4c7bgsgoll44au7cy',
   },
 };
 async function loadNFTs() {
@@ -21,26 +28,33 @@ async function loadNFTs() {
     if (i < 8) for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
   }
   for (i = 0; i < nfts[0].length; i++) {
-    nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
+    sex = nfts[4][i];
+    nfts[7][i] = img[nfts[3][i]][sex];
     $('#myWH').append(
       `<p id="o${nfts[5][i]}"class="boxnft"><b>TWC #${nfts[5][i]}
       </b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded:${
         nfts[2][i] > 0
           ? moment(moment.unix(nfts[2][i])).fromNow()
           : 'Since forever'
-      }<br/>Generation: ${nfts[3][i]} (${nfts[4][i] == 0 ? 'Female' : 'Male'})
+      }<br/>Generation: ${nfts[3][i]} (${
+        sex < 1 ? 'Egg' : sex < 2 ? 'Female' : 'Male'
+      })
       <br/><img src="${src}${nfts[7][i]}${
         moment
           .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
-          .asSeconds() > /*60480*/ 0 && nfts[6][i] == 1
+          .asSeconds() > /*60480*/ 0 &&
+        nfts[6][i] > 0 &&
+        sex > 0
           ? `"onclick="loadImg(${i})"class="nft`
           : `"class="nobreed`
-      }"></p> `
+      }">${
+        sex < 1 ? `<br><a onclick="REVEAL(${nfts[5][i]})">Reveal</a>` : ``
+      }</p> `
     );
   }
 }
 async function loadImg(p1) {
-  s1 = `<video autoplay loop muted onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft"></video>`;
+  s1 = `<img onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft">`;
   if (breed1 == null) {
     $('#breed1').html(s1);
     breed1 = nfts[5][p1];
@@ -73,8 +87,26 @@ async function unloadImg() {
   breed1 = breed2 = null;
   for (i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
-async function getCID() {
-  sex = Math.floor(Math.random() * 2);
+async function MINT() {
+  await contract.MINT(img[0][1]).send({
+    from: acct[0],
+    gas: 21e5,
+    value: 0.0e18,
+  });
+  location.reload();
+}
+async function BREED() {
+  if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
+  else {
+    await contract.BREED(breed1, breed2, img[0][gen]).send({
+      from: acct[0],
+      gas: 21e5,
+    });
+    location.reload();
+  }
+}
+async function REVEAL(id) {
+  sex = Math.floor(Math.random() * 2) + 1;
   txt = '"trait_type":"';
   ipfs = IpfsApi({
     host: 'ipfs.infura.io',
@@ -91,9 +123,7 @@ async function getCID() {
     reader.readAsArrayBuffer(
       new File(
         [
-          `{"name":"Whooli Hootie #${
-            parseInt(count) + 1
-          }","description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!","animation_url":"ipfs://${
+          `{"name":"TWC #${id}","description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!","image":"ipfs://${
             img[gen][sex]
           }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
             sex == 0 ? 'Female' : 'Male'
@@ -108,28 +138,7 @@ async function getCID() {
     );
   });
   cid = pro[0].hash;
-}
-async function MINT() {
-  await contract.MINT(img[0][1]).send({
-    from: acct[0],
-    gas: 21e5,
-    value: 0.0e18,
-  });
-  location.reload();
-}
-async function BREED() {
-  if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
-  else {
-    await contract.BREED(breed1, breed2, egg).send({
-      from: acct[0],
-      gas: 21e5,
-    });
-    location.reload();
-  }
-}
-async function REVEAL() {
-  await getCID();
-  await contract.MINT(sex, cid).send({
+  await contract.REVEAL(id, sex, cid).send({
     from: acct[0],
     gas: 21e5,
   });
