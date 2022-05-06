@@ -2,39 +2,40 @@
 var breed1, breed2, loaded;
 src = 'https://ipfs.io/ipfs/';
 img = {
-  0: {
-    1: 'bafkreicm46dqjugoetjngik6j7dseiby5shmosivknlbg427dxat7itkg4',
-    2: 'bafkreigyilphuosbnzs2tncmexuojagn6k3py3u63fyfjpy3zb667oza34',
-  },
   1: {
+    0: 'bafkreicgffianjvmha4v352kqe7flizgmf2ozl6bddg4zk7xz6lrduktba',
     1: 'bafybeidlm3qxalrtbpzr4kir2jvew2zih7reub6b4tng6mk6jb7al6r6va/10.webm',
     2: 'bafybeifnpc7l2fy37cnjrtowayhp24etdcd3urayq4i4poeeuwvtqdgbhe/11.webm',
   },
   2: {
+    0: 'bafkreihls74flpvqdxg2ckksqrpomea5kllfvsgpd5zq6drhjzukhscyu4',
     1: 'bafybeibogekdotq25jwoxzcpi2ec2edlni4rnuiczdtserbw5u4utrldp4/20.webm',
     2: 'bafybeia455j47fygctqwovslyzxkag4gkdb5sr542an24xw5ylbxcfrnw4/21.webm',
   },
 };
 async function loadNFTs() {
-  nfts = await contract.PLAYERITEMS(acct[0]).call();
-  for (i = 0; i < nfts.length; i++) {
+  pi = await contract.PLAYERITEMS(acct[0]).call();
+  nfts = [];
+  for (i = 0; i < 8; i++) {
+    nfts[i] = [];
+    if (i < 8) for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
+  }
+  for (i = 0; i < nfts[0].length; i++) {
     nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
     $('#myWH').append(
-      `<p id="o${nfts[5][i]}"class="boxnft"><b>Whooli Hootie #${
-        nfts[5][i]
-      }</b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded: ${
+      `<p id="o${nfts[5][i]}"class="boxnft"><b>TWC #${nfts[5][i]}
+      </b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded:${
         nfts[2][i] > 0
           ? moment(moment.unix(nfts[2][i])).fromNow()
           : 'Since forever'
-      }<br/>Generation: ${nfts[3][i]} (${
-        nfts[4][i] == 0 ? 'Female' : 'Male'
-      })<br/><video autoplay loop muted src="${src}${nfts[7][i]}${
+      }<br/>Generation: ${nfts[3][i]} (${nfts[4][i] == 0 ? 'Female' : 'Male'})
+      <br/><img src="${src}${nfts[7][i]}${
         moment
           .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
           .asSeconds() > /*60480*/ 0 && nfts[6][i] == 1
           ? `"onclick="loadImg(${i})"class="nft`
           : `"class="nobreed`
-      }"></video></p> `
+      }"></p> `
     );
   }
 }
@@ -111,6 +112,7 @@ async function getCID() {
 async function MINT() {
   await contract.MINT(img[0][1]).send({
     from: acct[0],
+    gas: 21e5,
     value: 0.0e18,
   });
   location.reload();
@@ -120,6 +122,7 @@ async function BREED() {
   else {
     await contract.BREED(breed1, breed2, egg).send({
       from: acct[0],
+      gas: 21e5,
     });
     location.reload();
   }
@@ -128,6 +131,7 @@ async function REVEAL() {
   await getCID();
   await contract.MINT(sex, cid).send({
     from: acct[0],
+    gas: 21e5,
   });
   location.reload();
 }
