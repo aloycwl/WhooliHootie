@@ -228,7 +228,7 @@ async function load() {
           type: _f,
         },
       ],
-      '0xD120D29947BCb41812Dc6e7AbA2782E7c8237F36'
+      '0x98F8CdA46159fA10583956C530D259929F0b6088'
     );
     contract = contract.methods;
     contract2 = new web3.Contract(
@@ -241,7 +241,7 @@ async function load() {
           type: _f,
         },
       ],
-      '0x34A85f092877F93584ab9f4fe9aE2FFA8C846B1F'
+      '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d'
     );
     d = await contract.gen(1).call();
     count = await contract.count.call().call();
