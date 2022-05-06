@@ -85,6 +85,7 @@ async function unloadImg() {
   $('#breed2').empty();
   $('#breed').html('');
   breed1 = breed2 = null;
+  gen = 0;
   for (i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
 }
 async function MINT() {
