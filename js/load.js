@@ -136,96 +136,148 @@ async function load() {
       });
       location.reload();
     }
-    _u = 'uint256';
-    _ua = _u + '[]';
-    _s = 'string';
-    _f = 'function';
-    _d = 'address';
-    _b = 'balance';
-    _v = 'view';
-    _p = 'payable';
-    PS = {
-      internalType: _ua,
-      name: '',
-      type: _ua,
-    };
-    PT = {
-      internalType: _u,
-      name: 's',
-      type: _u,
-    };
-    PU = {
-      internalType: _s,
-      name: 'r',
-      type: _s,
-    };
-    PV = {
-      internalType: _u,
-      name: '',
-      type: _u,
-    };
     contract = new web3.Contract(
       [
         {
           inputs: [
-            PT,
             {
-              internalType: _u,
-              name: 'q',
-              type: _u,
+              internalType: 'uint256',
+              name: 'a',
+              type: 'uint256',
             },
             {
-              internalType: _u,
-              name: 's',
-              type: _u,
+              internalType: 'uint256',
+              name: 'b',
+              type: 'uint256',
             },
-            PU,
+            {
+              internalType: 'string',
+              name: 'c',
+              type: 'string',
+            },
           ],
           name: 'BREED',
           outputs: [],
-          stateMutability: _p,
-          type: _f,
-        },
-        {
-          inputs: [PT, PU],
-          name: 'MINT',
-          outputs: [],
-          stateMutability: _p,
-          type: _f,
-        },
-        {
-          inputs: [],
-          name: 'count',
-          outputs: [PV],
-          stateMutability: _v,
-          type: _f,
-        },
-        {
-          inputs: [PV],
-          name: 'gen',
-          outputs: [PV, PV],
-          stateMutability: _v,
-          type: _f,
-        },
-        {
-          inputs: [],
-          name: 'getBalance',
-          outputs: [PV],
-          stateMutability: _v,
-          type: _f,
+          stateMutability: 'payable',
+          type: 'function',
         },
         {
           inputs: [
             {
-              internalType: _d,
+              internalType: 'string',
+              name: 'r',
+              type: 'string',
+            },
+          ],
+          name: 'MINT',
+          outputs: [],
+          stateMutability: 'payable',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'address',
               name: 'a',
-              type: _d,
+              type: 'address',
             },
           ],
           name: 'PLAYERITEMS',
-          outputs: [PS, PS, PS, PS, PS, PS, PS],
-          stateMutability: _v,
-          type: _f,
+          outputs: [
+            {
+              internalType: 'uint256[]',
+              name: 'r',
+              type: 'uint256[]',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'uint256',
+              name: 'a',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'b',
+              type: 'uint256',
+            },
+            {
+              internalType: 'string',
+              name: 'c',
+              type: 'string',
+            },
+          ],
+          name: 'REVEAL',
+          outputs: [],
+          stateMutability: 'nonpayable',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'count',
+          outputs: [
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+          ],
+          name: 'gen',
+          outputs: [
+            {
+              internalType: 'uint256',
+              name: 'maxCount',
+              type: 'uint256',
+            },
+            {
+              internalType: 'uint256',
+              name: 'currentCount',
+              type: 'uint256',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'getBalance',
+          outputs: [
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
+        },
+        {
+          inputs: [],
+          name: 'name',
+          outputs: [
+            {
+              internalType: 'string',
+              name: '',
+              type: 'string',
+            },
+          ],
+          stateMutability: 'pure',
+          type: 'function',
         },
       ],
       '0x98F8CdA46159fA10583956C530D259929F0b6088'
@@ -234,11 +286,23 @@ async function load() {
     contract2 = new web3.Contract(
       [
         {
-          constant: true,
-          inputs: [{ name: '_owner', type: _d }],
-          name: _b + 'Of',
-          outputs: [{ name: _b, type: _u }],
-          type: _f,
+          inputs: [
+            {
+              internalType: 'address',
+              name: 'a',
+              type: 'address',
+            },
+          ],
+          name: 'balanceOf',
+          outputs: [
+            {
+              internalType: 'uint256',
+              name: '',
+              type: 'uint256',
+            },
+          ],
+          stateMutability: 'view',
+          type: 'function',
         },
       ],
       '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d'
