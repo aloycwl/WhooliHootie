@@ -1,20 +1,23 @@
-//p1,p2,time,gen,sex,id,breed,img [DEPLOYMENT: set price, set mainnet]
+//[DEPLOYMENT: set price, set mainnet]
 var breed1, breed2, loaded;
 src = 'https://ipfs.io/ipfs/';
 img = {
+  0: {
+    1: 'bafkreicm46dqjugoetjngik6j7dseiby5shmosivknlbg427dxat7itkg4',
+    2: 'bafkreigyilphuosbnzs2tncmexuojagn6k3py3u63fyfjpy3zb667oza34',
+  },
   1: {
-    0: 'bafybeidlm3qxalrtbpzr4kir2jvew2zih7reub6b4tng6mk6jb7al6r6va/10.webm',
-    1: 'bafybeifnpc7l2fy37cnjrtowayhp24etdcd3urayq4i4poeeuwvtqdgbhe/11.webm',
+    1: 'bafybeidlm3qxalrtbpzr4kir2jvew2zih7reub6b4tng6mk6jb7al6r6va/10.webm',
+    2: 'bafybeifnpc7l2fy37cnjrtowayhp24etdcd3urayq4i4poeeuwvtqdgbhe/11.webm',
   },
   2: {
-    0: 'bafybeibogekdotq25jwoxzcpi2ec2edlni4rnuiczdtserbw5u4utrldp4/20.webm',
-    1: 'bafybeia455j47fygctqwovslyzxkag4gkdb5sr542an24xw5ylbxcfrnw4/21.webm',
+    1: 'bafybeibogekdotq25jwoxzcpi2ec2edlni4rnuiczdtserbw5u4utrldp4/20.webm',
+    2: 'bafybeia455j47fygctqwovslyzxkag4gkdb5sr542an24xw5ylbxcfrnw4/21.webm',
   },
 };
 async function loadNFTs() {
   nfts = await contract.PLAYERITEMS(acct[0]).call();
-  nfts[7] = new Array();
-  for (i = 0; i < nfts[0].length; i++) {
+  for (i = 0; i < nfts.length; i++) {
     nfts[7][i] = img[nfts[3][i]][nfts[4][i]];
     $('#myWH').append(
       `<p id="o${nfts[5][i]}"class="boxnft"><b>Whooli Hootie #${
@@ -106,9 +109,7 @@ async function getCID() {
   cid = pro[0].hash;
 }
 async function MINT() {
-  gen = 1;
-  await getCID();
-  await contract.MINT(sex, cid).send({
+  await contract.MINT(img[0][1]).send({
     from: acct[0],
     value: 0.0e18,
   });
@@ -117,12 +118,18 @@ async function MINT() {
 async function BREED() {
   if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
   else {
-    await getCID();
-    await contract.BREED(breed1, breed2, sex, cid).send({
+    await contract.BREED(breed1, breed2, egg).send({
       from: acct[0],
     });
     location.reload();
   }
+}
+async function REVEAL() {
+  await getCID();
+  await contract.MINT(sex, cid).send({
+    from: acct[0],
+  });
+  location.reload();
 }
 async function load() {
   if (typeof ethereum != 'undefined') {
@@ -289,7 +296,7 @@ async function load() {
           inputs: [
             {
               internalType: 'address',
-              name: 'a',
+              name: '',
               type: 'address',
             },
           ],
@@ -319,24 +326,25 @@ async function load() {
     $('#connect').hide();
   }
 }
-async function isWeb3() {
-  if (typeof ethereum != 'undefined') {
-    await web3.getAccounts().then((d) => {
-      if (d.length > 0) {
-        $('#connect').hide();
-        $('#root').show();
-        if (!loaded) {
-          loadNFTs();
-          loaded = true;
+$(document).ready(
+  setInterval(async function () {
+    if (typeof ethereum != 'undefined') {
+      await web3.getAccounts().then((d) => {
+        if (d.length > 0) {
+          $('#connect').hide();
+          $('#root').show();
+          if (!loaded) {
+            loadNFTs();
+            loaded = true;
+          }
+        } else {
+          $('#connect').show();
+          $('#root').hide();
+          $('#name').html(`<b>Whooli Hootie </b>`);
+          $('#mint').html('MINT (');
         }
-      } else {
-        $('#connect').show();
-        $('#root').hide();
-        $('#name').html(`<b>Whooli Hootie </b>`);
-        $('#mint').html('MINT (');
-      }
-    });
-  } else $('#connect').html('No Metamask');
-}
-setInterval(isWeb3, 1000);
+      });
+    } else $('#connect').html('No Metamask');
+  }, 1000)
+);
 load();
