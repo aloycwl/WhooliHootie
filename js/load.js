@@ -128,9 +128,9 @@ async function REVEAL(id) {
           }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
             sex == 0 ? 'Female' : 'Male'
           }"},{${txt}Parent 1","value":"${
-            breed1 == null ? '' : 'WHCC #' + breed1
-          }"},{${txt}Parent 2","value":"${
-            breed2 == null ? '' : 'WHCC #' + breed2
+            breed1 == null ? '' : 'TWC #' + breed1
+          }"},${txt}Parent 2","value":"${
+            breed2 == null ? '' : 'TWC #' + breed2
           }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`,
         ],
         'application/json'
@@ -334,7 +334,7 @@ async function load() {
     $('#name').append(
       `${
         (await contract.getBalance.call().call()) / 1e18
-      } balance. Owl Wallet: ${owlWallet}`
+      } balance. Your Wallet: ${owlWallet} POT`
     );
     $('#connect').hide();
   }
