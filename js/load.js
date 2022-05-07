@@ -130,7 +130,7 @@ async function REVEAL(id) {
             sex == 0 ? 'Female' : 'Male'
           }"},{${txt}Parent 1","value":"${
             breed1 == null ? '' : 'TWC #' + breed1
-          }"},${txt}Parent 2","value":"${
+          }"},{${txt}Parent 2","value":"${
             breed2 == null ? '' : 'TWC #' + breed2
           }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`,
         ],
