@@ -91,7 +91,6 @@ async function unloadImg() {
 async function MINT() {
   await contract.MINT(img[0][1]).send({
     from: acct[0],
-    gas: 21e5,
     value: 0.0e18,
   });
   location.reload();
@@ -101,7 +100,6 @@ async function BREED() {
   else {
     await contract.BREED(breed1, breed2, img[0][gen]).send({
       from: acct[0],
-      gas: 21e5,
     });
     location.reload();
   }
@@ -141,7 +139,6 @@ async function REVEAL(id) {
   cid = pro[0].hash;
   await contract.REVEAL(id, sex, cid).send({
     from: acct[0],
-    gas: 21e5,
   });
   location.reload();
 }
@@ -157,57 +154,44 @@ async function load() {
       });
       location.reload();
     }
+    c1 = {
+      internalType: 'uint256',
+      name: '',
+      type: 'uint256',
+    };
+    c2 = {
+      internalType: 'string',
+      name: '',
+      type: 'string',
+    };
+    c3 = {
+      internalType: 'address',
+      name: '',
+      type: 'address',
+    };
     contract = new web3.Contract(
       [
         {
-          inputs: [
-            {
-              internalType: 'uint256',
-              name: 'a',
-              type: 'uint256',
-            },
-            {
-              internalType: 'uint256',
-              name: 'b',
-              type: 'uint256',
-            },
-            {
-              internalType: 'string',
-              name: 'c',
-              type: 'string',
-            },
-          ],
+          inputs: [c1, c1, c2],
           name: 'BREED',
           outputs: [],
           stateMutability: 'payable',
           type: 'function',
         },
         {
-          inputs: [
-            {
-              internalType: 'string',
-              name: 'r',
-              type: 'string',
-            },
-          ],
+          inputs: [c2],
           name: 'MINT',
           outputs: [],
           stateMutability: 'payable',
           type: 'function',
         },
         {
-          inputs: [
-            {
-              internalType: 'address',
-              name: 'a',
-              type: 'address',
-            },
-          ],
+          inputs: [c3],
           name: 'PLAYERITEMS',
           outputs: [
             {
               internalType: 'uint256[]',
-              name: 'r',
+              name: '',
               type: 'uint256[]',
             },
           ],
@@ -215,23 +199,7 @@ async function load() {
           type: 'function',
         },
         {
-          inputs: [
-            {
-              internalType: 'uint256',
-              name: 'a',
-              type: 'uint256',
-            },
-            {
-              internalType: 'uint256',
-              name: 'b',
-              type: 'uint256',
-            },
-            {
-              internalType: 'string',
-              name: 'c',
-              type: 'string',
-            },
-          ],
+          inputs: [c1, c1, c2],
           name: 'REVEAL',
           outputs: [],
           stateMutability: 'nonpayable',
@@ -240,63 +208,28 @@ async function load() {
         {
           inputs: [],
           name: 'count',
-          outputs: [
-            {
-              internalType: 'uint256',
-              name: '',
-              type: 'uint256',
-            },
-          ],
+          outputs: [c1],
           stateMutability: 'view',
           type: 'function',
         },
         {
-          inputs: [
-            {
-              internalType: 'uint256',
-              name: '',
-              type: 'uint256',
-            },
-          ],
+          inputs: [c1],
           name: 'gen',
-          outputs: [
-            {
-              internalType: 'uint256',
-              name: 'maxCount',
-              type: 'uint256',
-            },
-            {
-              internalType: 'uint256',
-              name: 'currentCount',
-              type: 'uint256',
-            },
-          ],
+          outputs: [c1, c1],
           stateMutability: 'view',
           type: 'function',
         },
         {
           inputs: [],
           name: 'getBalance',
-          outputs: [
-            {
-              internalType: 'uint256',
-              name: '',
-              type: 'uint256',
-            },
-          ],
+          outputs: [c1],
           stateMutability: 'view',
           type: 'function',
         },
         {
           inputs: [],
           name: 'name',
-          outputs: [
-            {
-              internalType: 'string',
-              name: '',
-              type: 'string',
-            },
-          ],
+          outputs: [c2],
           stateMutability: 'pure',
           type: 'function',
         },
@@ -307,21 +240,9 @@ async function load() {
     contract2 = new web3.Contract(
       [
         {
-          inputs: [
-            {
-              internalType: 'address',
-              name: '',
-              type: 'address',
-            },
-          ],
+          inputs: [c3],
           name: 'balanceOf',
-          outputs: [
-            {
-              internalType: 'uint256',
-              name: '',
-              type: 'uint256',
-            },
-          ],
+          outputs: [c1],
           stateMutability: 'view',
           type: 'function',
         },
@@ -331,7 +252,7 @@ async function load() {
     d = await contract.gen(1).call();
     count = await contract.count.call().call();
     owlWallet = (await contract2.methods.balanceOf(acct[0]).call()) / 1e18;
-    $('#mint').append(`${d[1]} / ${d[0]})`);
+    $('#mint').append(`(${d[1]} / ${d[0]})`);
     $('#name').append(
       `${
         (await contract.getBalance.call().call()) / 1e18
@@ -355,7 +276,7 @@ $(document).ready(
           $('#connect').show();
           $('#root').hide();
           $('#name').html(`<b>Whooli Hootie </b>`);
-          $('#mint').html('MINT (');
+          $('#mint').html('MINT ');
         }
       });
     } else $('#connect').html('No Metamask');
