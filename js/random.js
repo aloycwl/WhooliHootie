@@ -63,7 +63,6 @@ async function dd(s1, s2, s3, s4) {
     img = new Image();
     img.setAttribute('crossorigin', 'anonymous');
     img.src = `https://aloycwl.github.io/twc_frontend/img/${s4}${s1}/${r}.png`;
-    console.log(img.src);
     return new Promise((resolve) => {
       img.onload = function () {
         cd.drawImage(img, 0, 0, 350, 350);
