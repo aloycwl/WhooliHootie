@@ -78,7 +78,7 @@
       img.src = `https://aloycwl.github.io/twc_frontend/img/${s4}${s1}/${r}.png`;
       return new Promise((resolve) => {
         img.onload = function () {
-          cd.drawImage(img, 0, 0, 350, 350);
+          cd.drawImage(img, 120, 50, 350, 350, 0, 0, 350, 350);
           resolve();
         };
       });
