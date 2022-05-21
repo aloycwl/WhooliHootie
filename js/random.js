@@ -24,8 +24,36 @@ const Background = [
   Brow = ['Furrowed', 'Raised', 'Normal'],
   Eyes = ['Sore', 'Normal', 'Crazy', 'Tired', 'Blur', 'Happy', 'Flame'],
   Beak = ['Open', 'Sad', 'Gold Teeth', 'Tounge Out', 'Wide'],
-  c = document.getElementById('myCanvas');
-cd = c.getContext('2d');
+  mAccessories = ['Black Glasses', 'Gold Glasses', 'Monacle'],
+  mClothes = [
+    'Black Tattoo',
+    'White Tattoo',
+    'Red Shirt',
+    'Purple Shirt',
+    'Blue Shirt',
+    'Green Shirt',
+    'Purple Suit',
+    'Red Suit',
+    'Black Suit',
+    'Blue Suit',
+  ],
+  fMask = ['Blue-Gold', 'Red-Purple', 'Red-Yellow', 'Gold'],
+  fClothes = [
+    'White Tattoo',
+    'Black Tattoo',
+    'Purple Flower Shirt',
+    'Blue Flower Shirt',
+    'Gray Flower Shirt',
+    'Pink Flower Shirt',
+    'Yellow Dress',
+    'Purple Dress',
+    'Blue Dress',
+    'Red Dress',
+  ],
+  fAccessories = ['Earrings', 'Necklace'],
+  fFlower = ['Red-Purple', 'Yellow-Orange', 'Purple-Blue'],
+  c = document.getElementById('myCanvas'),
+  cd = c.getContext('2d');
 
 async function dd(s1, s2, s3) {
   r = ran(s3.length);
