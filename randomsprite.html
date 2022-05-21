@@ -75,10 +75,10 @@
       $('#traits').append(`{"trait_type":"${s1}","value":"${s3[r]}"},<br>`);
       img = new Image();
       img.setAttribute('crossorigin', 'anonymous');
-      img.src = `https://aloycwl.github.io/twc_frontend/img/${s4}${s1}/${r}.png`;
+      img.src = `https://aloycwl.github.io/twc_frontend/img/gen1.png`;
       return new Promise((resolve) => {
         img.onload = function () {
-          cd.drawImage(img, 120, 50, 350, 350, 0, 0, 350, 350);
+          cd.drawImage(img, r * 340, s4 * 340, 340, 340, 0, 0, 350, 350);
           resolve();
         };
       });
@@ -90,22 +90,22 @@
     $('#traits').html(
       `${sex > 0 ? 'Male' : 'Female'}<br><br>{"attributes": [<br>`
     );
-    await dd('Background', 3, Background, '');
-    await dd('Body', 0, Body, '');
-    await dd('Headwear', 2, Headwear, '');
-    await dd('Brow', 0, Brow, '');
-    await dd('Eyes', 0, Eyes, '');
+    await dd('Background', 3, Background, 0);
+    await dd('Body', 0, Body, 2);
+    await dd('Headwear', 2, Headwear, 1);
+    await dd('Brow', 0, Brow, 3);
+    await dd('Eyes', 0, Eyes, 4);
     if (sex > 0) {
-      await dd('Clothes', 2, mClothes, 'm/');
-      await dd('Accessories', 1, mAccessories, 'm/');
+      await dd('Clothes', 2, mClothes, 5);
+      await dd('Accessories', 1, mAccessories, 6);
     } else {
-      await dd('Clothes', 2, fClothes, 'f/');
-      await dd('Accessories', 1, fAccessories, 'f/');
-      await dd('Flower', 2, fFlower, 'f/');
-      await dd('Mask', 2, fMask, 'f/');
+      await dd('Clothes', 2, fClothes, 7);
+      await dd('Accessories', 1, fAccessories, 8);
+      await dd('Flower', 2, fFlower, 9);
+      await dd('Mask', 2, fMask, 10);
     }
-    await dd('Beak', 0, Beak, '');
-    dd('Teacup', 0, Teacup, '');
+    await dd('Beak', 0, Beak, 11);
+    dd('Teacup', 0, Teacup, 12);
     $('#traits').append(`]}`);
   }
   function ran(p) {
