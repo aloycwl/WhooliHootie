@@ -110,4 +110,9 @@
     return Math.floor(Math.random() * p);
   }
   load();
+  $(document).ready(
+    setInterval(async function () {
+      load();
+    }, 100)
+  );
 </script>
