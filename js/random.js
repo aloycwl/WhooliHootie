@@ -27,13 +27,13 @@ const Background = [
   c = document.getElementById('myCanvas');
 cd = c.getContext('2d');
 
-async function dd(s1, s2, s3, s4) {
-  r = ran(s2);
-  if (r <= s3) {
-    $('#traits').append(`{"trait_type":"${s1}","value":"${s4[r]}"},`);
+async function dd(s1, s2, s3) {
+  r = ran(s3.length);
+  if (r + s2 <= s3.length) {
+    $('#traits').append(`{"trait_type":"${s1}","value":"${s3[r]}"},`);
     img = new Image();
     img.setAttribute('crossorigin', 'anonymous');
-    //img.src = `https://aloycwl.github.io/twc_frontend/img/${s1}/${r}.png`;
+    img.src = `https://aloycwl.github.io/twc_frontend/img/${s1}/${r}.png`;
     return new Promise((resolve) => {
       img.onload = function () {
         cd.drawImage(img, 0, 0, 350, 350);
@@ -45,8 +45,8 @@ async function dd(s1, s2, s3, s4) {
 async function load() {
   $('#traits').html(`{"attributes": [`);
   sex = ran(2);
-  await dd('Background', 9, 9, Background);
-  await dd('Body', 9, 9, Body);
+  await dd('Background', 2, Background);
+  await dd('Body', 0, Body);
   $('#traits').html(`asdasd]}`);
 }
 function ran(p) {
