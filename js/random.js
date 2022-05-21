@@ -55,13 +55,13 @@ const Background = [
   c = document.getElementById('myCanvas'),
   cd = c.getContext('2d');
 
-async function dd(s1, s2, s3) {
+async function dd(s1, s2, s3, s4) {
   r = ran(s3.length);
   if (r + s2 <= s3.length) {
-    $('#traits').append(`{"trait_type":"${s1}","value":"${s3[r]}"},`);
+    $('#traits').append(`{"trait_type":"${s1}","value":"${s3[r]}"},<br>`);
     img = new Image();
     img.setAttribute('crossorigin', 'anonymous');
-    img.src = `https://aloycwl.github.io/twc_frontend/img/${s1}/${r}.png`;
+    img.src = `https://aloycwl.github.io/twc_frontend/img/${s4}${s1}/${r}.png`;
     return new Promise((resolve) => {
       img.onload = function () {
         cd.drawImage(img, 0, 0, 350, 350);
@@ -71,11 +71,28 @@ async function dd(s1, s2, s3) {
   }
 }
 async function load() {
-  $('#traits').html(`{"attributes": [`);
+  cd.clearRect(0, 0, 350, 350);
   sex = ran(2);
-  await dd('Background', 2, Background);
-  await dd('Body', 0, Body);
-  $('#traits').html(`asdasd]}`);
+  $('#traits').html(
+    `${sex > 0 ? 'Male' : 'Female'}<br><br>{"attributes": [<br>`
+  );
+  await dd('Background', 3, Background, '');
+  await dd('Body', 0, Body, '');
+  await dd('Headwear', 2, Headwear, '');
+  await dd('Brow', 0, Brow, '');
+  await dd('Eyes', 0, Eyes, '');
+  await dd('Beak', 0, Beak, '');
+  if (sex > 0) {
+    await dd('Accessories', 1, mAccessories, 'm/');
+    await dd('Clothes', 2, mClothes, 'm/');
+  } else {
+    await dd('Accessories', 1, fAccessories, 'f/');
+    await dd('Clothes', 2, fClothes, 'f/');
+    await dd('Flower', 2, fFlower, 'f/');
+    await dd('Mask', 2, fMask, 'f/');
+  }
+  dd('Mask', 2, fMask, '');
+  $('#traits').append(`]}`);
 }
 function ran(p) {
   return Math.floor(Math.random() * p);
