@@ -67,18 +67,18 @@
     fFlower = ['Red-Purple', 'Yellow-Orange', 'Purple-Blue'],
     Teacup = ['Singapore'],
     c = document.getElementById('myCanvas'),
-    cd = c.getContext('2d');
+    cd = c.getContext('2d'),
+    s = 340;
 
   async function dd(s1, s2, s3, s4) {
     r = ran(s3.length);
     if (r + s2 <= s3.length) {
       $('#traits').append(`{"trait_type":"${s1}","value":"${s3[r]}"},<br>`);
       img = new Image();
-      img.setAttribute('crossorigin', 'anonymous');
       img.src = `https://aloycwl.github.io/twc_frontend/img/gen1.png`;
       return new Promise((resolve) => {
         img.onload = function () {
-          cd.drawImage(img, r * 340, s4 * 340, 340, 340, 0, 0, 350, 350);
+          cd.drawImage(img, r * s, s4 * s, s, s, 0, 0, 350, 350);
           resolve();
         };
       });
@@ -87,9 +87,7 @@
   async function load() {
     cd.clearRect(0, 0, 350, 350);
     sex = ran(2);
-    $('#traits').html(
-      `${sex > 0 ? 'Male' : 'Female'}<br><br>{"attributes": [<br>`
-    );
+    $('#traits').html(`${sex > 0 ? 'Male' : 'Female'}<br><br>{"attributes": [`);
     await dd('Background', 3, Background, 0);
     await dd('Body', 0, Body, 2);
     await dd('Headwear', 2, Headwear, 1);
@@ -106,7 +104,7 @@
     }
     await dd('Beak', 0, Beak, 11);
     dd('Teacup', 0, Teacup, 12);
-    $('#traits').append(`]}`);
+    $('#traits').html($('#traits').html().substring(0,$('#traits').html().length-1)+`]}`);
   }
   function ran(p) {
     return Math.floor(Math.random() * p);
