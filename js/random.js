@@ -44,7 +44,7 @@ async function dd(s1, s2, s3, s4) {
 }
 async function load() {
   $('#traits').html(`{"attributes": [`);
-  sex = ran(3);
+  sex = ran(2);
   await dd('Background', 9, 9, Background);
   await dd('Body', 9, 9, Body);
   $('#traits').html(`asdasd]}`);
