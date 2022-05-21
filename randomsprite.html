@@ -1,16 +1,16 @@
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+</style>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <script src="https://aloycwl.github.io/js/cdn/jquery.min.js"></script>
-<canvas
-  id="myCanvas"
-  width="350"
-  height="350"
-  onclick="load()"
-  style="cursor: hand"
-></canvas>
+<div id="container"></div>
 <br /><br />
 <p id="traits"></p>
 <script>
-  const Background = [
+  va Background = [
       'Green',
       'Pink',
       'Brown',
@@ -65,9 +65,8 @@
     fAccessories = ['Earrings', 'Necklace'],
     fFlower = ['Red-Purple', 'Yellow-Orange', 'Purple-Blue'],
     Teacup = ['Singapore'],
-    c = document.getElementById('myCanvas'),
-    cd = c.getContext('2d'),
-    s = 340;
+    s = 340,
+    cnt = 0;
 
   async function dd(s1, s2, s3, s4) {
     r = ran(s3.length);
@@ -84,7 +83,12 @@
     }
   }
   async function load() {
-    cd.clearRect(0, 0, 350, 350);
+    $('#container').append(
+      `<canvas id="can${cnt}" width="350" height="350" style="cursor: hand"></canvas>`
+    );
+    (c = document.getElementById(`can${cnt}`)),
+      (cd = c.getContext('2d')),
+      cd.clearRect(0, 0, 350, 350);
     sex = ran(2);
     $('#traits').html(`${sex > 0 ? 'Male' : 'Female'}<br><br>`);
     txt = '{"attributes":[';
@@ -105,6 +109,7 @@
     await dd('Beak', 0, Beak, 11);
     await dd('Teacup', 0, Teacup, 12);
     $('#traits').append(txt.substring(0, txt.length - 1) + ']}');
+    cnt++;
   }
   function ran(p) {
     return Math.floor(Math.random() * p);
@@ -113,6 +118,6 @@
   $(document).ready(
     setInterval(async function () {
       load();
-    }, 100)
+    }, 500)
   );
 </script>
