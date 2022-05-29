@@ -154,52 +154,31 @@ async function load() {
       });
       location.reload();
     }
-    c1 = {
-      internalType: 'uint256',
-      name: '',
-      type: 'uint256',
-    };
-    c2 = {
-      internalType: 'string',
-      name: '',
-      type: 'string',
-    };
-    c3 = {
-      internalType: 'address',
-      name: '',
-      type: 'address',
-    };
     contract = new web3.Contract(
       [
         {
-          inputs: [c1, c1, c2],
+          inputs: [u1, u1, u5],
           name: 'BREED',
           outputs: [],
           stateMutability: 'payable',
           type: 'function',
         },
         {
-          inputs: [c2],
+          inputs: [u5],
           name: 'MINT',
           outputs: [],
           stateMutability: 'payable',
           type: 'function',
         },
         {
-          inputs: [c3],
+          inputs: [u3],
           name: 'PLAYERITEMS',
-          outputs: [
-            {
-              internalType: 'uint256[]',
-              name: '',
-              type: 'uint256[]',
-            },
-          ],
+          outputs: [u2],
           stateMutability: 'view',
           type: 'function',
         },
         {
-          inputs: [c1, c1, c2],
+          inputs: [u1, u1, u5],
           name: 'REVEAL',
           outputs: [],
           stateMutability: 'nonpayable',
@@ -208,29 +187,22 @@ async function load() {
         {
           inputs: [],
           name: 'count',
-          outputs: [c1],
+          outputs: [u1],
           stateMutability: 'view',
           type: 'function',
         },
         {
-          inputs: [c1],
+          inputs: [u1],
           name: 'gen',
-          outputs: [c1, c1],
+          outputs: [u1, u1],
           stateMutability: 'view',
           type: 'function',
         },
         {
           inputs: [],
           name: 'getBalance',
-          outputs: [c1],
+          outputs: [u1],
           stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'name',
-          outputs: [c2],
-          stateMutability: 'pure',
           type: 'function',
         },
       ],
@@ -240,9 +212,9 @@ async function load() {
     contract2 = new web3.Contract(
       [
         {
-          inputs: [c3],
+          inputs: [u3],
           name: 'balanceOf',
-          outputs: [c1],
+          outputs: [u1],
           stateMutability: 'view',
           type: 'function',
         },
