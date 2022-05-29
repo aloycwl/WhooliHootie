@@ -249,20 +249,25 @@ async function load() {
       ],
       '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d'
     );
-    d = await contract.gen(1).call();
-    count = await contract.count.call().call();
-    owlWallet = (
-      (await contract2.methods.balanceOf(acct[0]).call()) / 1e18
-    ).toLocaleString();
-    $('#mint').append(`(${d[1]} / ${d[0]})`);
-    $('#name').append(
-      `${
-        (await contract.getBalance.call().call()) / 1e18
-      } balance. Your Wallet: ${owlWallet} POT`
-    );
-    $('#connect').hide();
   }
 }
+async function display() {
+  d = await contract.gen(1).call();
+  count = await contract.count.call().call();
+  owlWallet = (
+    (await contract2.methods.balanceOf(acct[0]).call()) / 1e18
+  ).toLocaleString();
+  $('#mint').append(`(${d[1]} / ${d[0]})`);
+  $('#name').append(
+    `${
+      (await contract.getBalance.call().call()) / 1e18
+    } balance. Your Wallet: ${owlWallet} POT`
+  );
+}
+(async () => {
+  await load();
+  display();
+})();
 $(document).ready(
   setInterval(async function () {
     if (typeof ethereum != 'undefined') {
@@ -284,4 +289,3 @@ $(document).ready(
     } else $('#connect').html('No Metamask');
   }, 1000)
 );
-load();
