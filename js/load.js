@@ -4,6 +4,8 @@ var breed1,
   loaded,
   gen = 1,
   src = 'https://ipfs.io/ipfs/';
+CA2 = '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d';
+CHAIN = 4;
 img = {
   0: {
     1: 'bafkreiekrovk2y2giv3obc3wlqgzof4w35kvggabqlegghujlvagbglc6y',
@@ -21,7 +23,7 @@ img = {
   },
 };
 async function loadNFTs() {
-  pi = await contract.PLAYERITEMS(acct[0]).call();
+  pi = await contract.PLAYERITEMS(acct).call();
   nfts = [];
   for (i = 0; i < 8; i++) {
     nfts[i] = [];
@@ -90,7 +92,7 @@ async function unloadImg() {
 }
 async function MINT() {
   await contract.MINT(img[0][1]).send({
-    from: acct[0],
+    from: acct,
     value: 0.0e18,
   });
   location.reload();
@@ -99,7 +101,7 @@ async function BREED() {
   if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
   else {
     await contract.BREED(breed1, breed2, img[0][gen]).send({
-      from: acct[0],
+      from: acct,
     });
     location.reload();
   }
@@ -138,106 +140,79 @@ async function REVEAL(id) {
   });
   cid = pro[0].hash;
   await contract.REVEAL(id, sex, cid).send({
-    from: acct[0],
+    from: acct,
   });
   location.reload();
-}
-async function load() {
-  if (typeof ethereum != 'undefined') {
-    web3 = new Web3(ethereum);
-    web3 = web3.eth;
-    acct = await ethereum.request({ method: 'eth_requestAccounts' });
-    if ((await web3.net.getId()) != 4) {
-      await ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x4' }],
-      });
-      location.reload();
-    }
-    contract = new web3.Contract(
-      [
-        {
-          inputs: [u1, u1, u5],
-          name: 'BREED',
-          outputs: [],
-          stateMutability: 'payable',
-          type: 'function',
-        },
-        {
-          inputs: [u5],
-          name: 'MINT',
-          outputs: [],
-          stateMutability: 'payable',
-          type: 'function',
-        },
-        {
-          inputs: [u3],
-          name: 'PLAYERITEMS',
-          outputs: [u2],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [u1, u1, u5],
-          name: 'REVEAL',
-          outputs: [],
-          stateMutability: 'nonpayable',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'count',
-          outputs: [u1],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [u1],
-          name: 'gen',
-          outputs: [u1, u1],
-          stateMutability: 'view',
-          type: 'function',
-        },
-        {
-          inputs: [],
-          name: 'getBalance',
-          outputs: [u1],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-      '0x98F8CdA46159fA10583956C530D259929F0b6088'
-    );
-    contract = contract.methods;
-    contract2 = new web3.Contract(
-      [
-        {
-          inputs: [u3],
-          name: 'balanceOf',
-          outputs: [u1],
-          stateMutability: 'view',
-          type: 'function',
-        },
-      ],
-      '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d'
-    );
-  }
 }
 async function display() {
   d = await contract.gen(1).call();
   count = await contract.count.call().call();
   owlWallet = (
-    (await contract2.methods.balanceOf(acct[0]).call()) / 1e18
+    (await contract2.methods.balanceOf(acct).call()) / 1e18
   ).toLocaleString();
   $('#mint').append(`(${d[1]} / ${d[0]})`);
   $('#name').append(
     `${
       (await contract.getBalance.call().call()) / 1e18
-    } balance. Your Wallet: ${owlWallet} POT`
+    } pool balance. Your Wallet: ${owlWallet} POT`
   );
 }
 (async () => {
-  await load();
+  await load(
+    [
+      {
+        inputs: [u1, u1, u5],
+        name: 'BREED',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function',
+      },
+      {
+        inputs: [u5],
+        name: 'MINT',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function',
+      },
+      {
+        inputs: [u3],
+        name: 'PLAYERITEMS',
+        outputs: [u2],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [u1, u1, u5],
+        name: 'REVEAL',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'count',
+        outputs: [u1],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [u1],
+        name: 'gen',
+        outputs: [u1, u1],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'getBalance',
+        outputs: [u1],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    '0x98F8CdA46159fA10583956C530D259929F0b6088'
+  );
+  await load2();
   display();
 })();
 $(document).ready(
