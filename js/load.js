@@ -6,6 +6,7 @@ var breed1,
   src = 'https://ipfs.io/ipfs/';
 CA2 = '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d';
 CHAIN = 4;
+WB = 'https://eth-rinkeby.alchemyapi.io/v2/xneL9EV87zUlVocEVcyDT5tqp4LZE0Fy';
 img = {
   0: {
     1: 'bafkreiekrovk2y2giv3obc3wlqgzof4w35kvggabqlegghujlvagbglc6y',
@@ -23,7 +24,7 @@ img = {
   },
 };
 async function loadNFTs() {
-  pi = await contract.PLAYERITEMS(acct).call();
+  pi = await contracta.PLAYERITEMS(acct).call();
   nfts = [];
   for (i = 0; i < 8; i++) {
     nfts[i] = [];
