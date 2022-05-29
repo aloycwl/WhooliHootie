@@ -148,7 +148,7 @@ async function display() {
   d = await contract.gen(1).call();
   count = await contract.count.call().call();
   owlWallet = (
-    (await contract2.methods.balanceOf(acct).call()) / 1e18
+    (await contract2.balanceOf(acct).call()) / 1e18
   ).toLocaleString();
   $('#mint').append(`(${d[1]} / ${d[0]})`);
   $('#name').append(
