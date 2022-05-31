@@ -94,12 +94,12 @@
     }
     async function REVEAL(id) {
       sex = Math.floor(Math.random() * 2) + 1;
-      txt = '"trait_type":"';
       ipfs = IpfsApi({
         host: 'ipfs.infura.io',
         port: 5001,
         protocol: 'https',
       });
+      txt = '"trait_type":"';
       pro = await new Promise((d) => {
         reader = new FileReader();
         reader.onloadend = () => {
