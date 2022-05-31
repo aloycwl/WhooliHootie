@@ -10,19 +10,17 @@
   </head>
   <body>
     <a id="connect" onclick="load()">Connect<br /></a>
-    <p id="name"></p>
-    <a id="root">
-      <a id="mint" onclick="MINT()">MINT </a><br />
-      <a id="breed" onclick="BREED()"></a>
+    <div id="root">
+      <b id="name"></b>
+      <b id="breed" onclick="BREED()"></b><br />
       <a id="breed1" class="boxnft"></a>
       <a id="breed2" class="boxnft"></a>
       <p id="myWH"></p>
-    </a>
+    </div>
   </body>
   <script>
     var breed1,
       breed2,
-      loaded,
       gen = 1,
       src = 'https://ipfs.io/ipfs/';
     CA2 = '0xB9f856eaAfA84ED8Dc46E3F9fB78891C9f2Be67d';
@@ -46,40 +44,6 @@
         2: 'bafkreiav5lxuncubwx667nkisdyvxykhysmsnoagw4c7bgsgoll44au7cy',
       },
     };
-    async function loadNFTs() {
-      pi = await contracta.PLAYERITEMS(acct).call();
-      nfts = [];
-      for (i = 0; i < 8; i++) {
-        nfts[i] = [];
-        if (i < 8)
-          for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
-      }
-      for (i = 0; i < nfts[0].length; i++) {
-        sex = nfts[4][i];
-        nfts[7][i] = img[nfts[3][i]][sex];
-        $('#myWH').append(
-          `<p id="o${nfts[5][i]}"class="boxnft"><b>TWC #${nfts[5][i]}
-      </b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded:${
-            nfts[2][i] > 0
-              ? moment(moment.unix(nfts[2][i])).fromNow()
-              : 'Since forever'
-          }<br/>Generation: ${nfts[3][i]} (${
-            sex < 1 ? 'Egg' : sex < 2 ? 'Female' : 'Male'
-          })
-      <br/><img src="${src}${nfts[7][i]}${
-            moment
-              .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
-              .asSeconds() > /*60480*/ 0 &&
-            nfts[6][i] > 0 &&
-            sex > 0
-              ? `"onclick="loadImg(${i})"class="nft`
-              : `"class="nobreed`
-          }">${
-            sex < 1 ? `<br><a onclick="REVEAL(${nfts[5][i]})">Reveal</a>` : ``
-          }</p> `
-        );
-      }
-    }
     async function loadImg(p1) {
       s1 = `<img onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft">`;
       if (breed1 == null) {
@@ -99,8 +63,8 @@
         if (p2 == p4) $(`#o${p3}`).hide();
       }
       if (breed1 > 0 && breed2 > 0) {
-        d = await contract.gen(parseInt(nfts[3][p1]) + 1).call();
-        $('#breed').html(`BREED (${d[1]}/${d[0]})`);
+        d = await contracta.gen(parseInt(nfts[3][p1]) + 1).call();
+        $('#breed').html(` | BREED (${d[1]}/${d[0]})`);
       }
       gen = parseInt(nfts[3][p1]) + 1;
     }
@@ -146,7 +110,7 @@
         reader.readAsArrayBuffer(
           new File(
             [
-              `{"name":"TWC #${id}","description":"We are a green chip NFT that gives passive income and many offline perks. Find another gender to breed your baby owl now!","image":"ipfs://${
+              `{"name":"TWC #${id}","description":"TWC is a passive income NFT with offline perks and business fundraising","image":"ipfs://${
                 img[gen][sex]
               }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
                 sex == 0 ? 'Female' : 'Male'
@@ -167,17 +131,46 @@
       location.reload();
     }
     async function display() {
-      d = await contract.gen(1).call();
-      count = await contract.count.call().call();
-      owlWallet = (
-        (await contract2.balanceOf(acct).call()) / 1e18
-      ).toLocaleString();
-      $('#mint').append(`(${d[1]} / ${d[0]})`);
-      $('#name').append(
-        `${
+      gen = await contract.gen(1).call();
+      owlWallet = (await contract2.balanceOf(acct).call()) / 1e18;
+      $('#name').html(
+        `Pool: ${
           (await contract.getBalance.call().call()) / 1e18
-        } pool balance. Your Wallet: ${owlWallet} POT`
+        } ETH | Wallet: ${owlWallet.toLocaleString()} POT |
+        <a onclick="MINT()">Mint (${gen[1]}/${gen[0]})</a>`
       );
+      pi = await contracta.PLAYERITEMS(acct).call();
+      nfts = [];
+      for (i = 0; i < 8; i++) {
+        nfts[i] = [];
+        if (i < 8)
+          for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
+      }
+      for (i = 0; i < nfts[0].length; i++) {
+        sex = nfts[4][i];
+        nfts[7][i] = img[nfts[3][i]][sex];
+        $('#myWH').append(
+          `<p id="o${nfts[5][i]}"class="boxnft"><b>TWC #${nfts[5][i]}
+      </b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded:${
+            nfts[2][i] > 0
+              ? moment(moment.unix(nfts[2][i])).fromNow()
+              : 'Since forever'
+          }<br/>Generation: ${nfts[3][i]} (${
+            sex < 1 ? 'Egg' : sex < 2 ? 'Female' : 'Male'
+          })
+      <br/><img src="${src}${nfts[7][i]}${
+            moment
+              .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
+              .asSeconds() > /*60480*/ 0 &&
+            nfts[6][i] > 0 &&
+            sex > 0
+              ? `"onclick="loadImg(${i})"class="nft`
+              : `"class="nobreed`
+          }">${
+            sex < 1 ? `<br><a onclick="REVEAL(${nfts[5][i]})">Reveal</a>` : ``
+          }</p> `
+        );
+      }
     }
     (async () => {
       await load(
@@ -236,27 +229,26 @@
       );
       await load2();
       display();
+      loaded = 1;
+      console.log('count');
     })();
-    $(document).ready(
+    $(document).ready(function () {
       setInterval(async function () {
         if (typeof ethereum != 'undefined') {
-          await web3.getAccounts().then((d) => {
-            if (d.length > 0) {
-              $('#connect').hide();
-              $('#root').show();
-              if (!loaded) {
-                loadNFTs();
-                loaded = true;
-              }
-            } else {
-              $('#connect').show();
-              $('#root').hide();
-              $('#name').html(`<b>Whooli Hootie </b>`);
-              $('#mint').html('MINT ');
+          d = await web3.getAccounts();
+          if (d.length > 0) {
+            $('#connect').hide();
+            $('#root').show();
+            if (loaded < 1) {
+              display();
+              loaded = 1;
             }
-          });
+          } else {
+            $('#connect').show();
+            $('#root').hide();
+          }
         } else $('#connect').html('No Metamask');
-      }, 1000)
-    );
+      }, 1000);
+    });
   </script>
 </html>
