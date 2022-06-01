@@ -204,13 +204,6 @@
             type: 'function',
           },
           {
-            inputs: [],
-            name: 'count',
-            outputs: [u1],
-            stateMutability: 'view',
-            type: 'function',
-          },
-          {
             inputs: [u1],
             name: 'gen',
             outputs: [u1, u1],
@@ -230,7 +223,6 @@
       await load2();
       display();
       loaded = 1;
-      console.log('count');
     })();
     $(document).ready(function () {
       setInterval(async function () {
