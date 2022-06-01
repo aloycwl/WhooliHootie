@@ -86,19 +86,13 @@
     async function BREED() {
       if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
       else {
-        await contract.BREED(breed1, breed2, img[0][gen]).send({
-          from: acct,
-        });
+        await contract.BREED(breed1, breed2, img[0][gen]).send(FA);
         location.reload();
       }
     }
     async function REVEAL(id) {
       sex = Math.floor(Math.random() * 2) + 1;
-      ipfs = IpfsApi({
-        host: 'ipfs.infura.io',
-        port: 5001,
-        protocol: 'https',
-      });
+      ipfs = IpfsApi(IA);
       txt = '"trait_type":"';
       cid = await uploadJson(
         `{"name":"TWC #${id}","description":"TWC is a passive income NFT with offline perks and business fundraising","image":"ipfs://${
@@ -111,9 +105,7 @@
           breed2 == null ? '' : 'TWC #' + breed2
         }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`
       );
-      await contract.REVEAL(id, sex, cid).send({
-        from: acct,
-      });
+      await contract.REVEAL(id, sex, cid).send(FA);
       location.reload();
     }
     async function display() {
