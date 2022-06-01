@@ -100,31 +100,17 @@
         protocol: 'https',
       });
       txt = '"trait_type":"';
-      pro = await new Promise((d) => {
-        reader = new FileReader();
-        reader.onloadend = () => {
-          ipfs.add(ipfs.Buffer.from(reader.result)).then((files) => {
-            d(files);
-          });
-        };
-        reader.readAsArrayBuffer(
-          new File(
-            [
-              `{"name":"TWC #${id}","description":"TWC is a passive income NFT with offline perks and business fundraising","image":"ipfs://${
-                img[gen][sex]
-              }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
-                sex == 0 ? 'Female' : 'Male'
-              }"},{${txt}Parent 1","value":"${
-                breed1 == null ? '' : 'TWC #' + breed1
-              }"},{${txt}Parent 2","value":"${
-                breed2 == null ? '' : 'TWC #' + breed2
-              }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`,
-            ],
-            'application/json'
-          )
-        );
-      });
-      cid = pro[0].hash;
+      cid = await uploadJson(
+        `{"name":"TWC #${id}","description":"TWC is a passive income NFT with offline perks and business fundraising","image":"ipfs://${
+          img[gen][sex]
+        }","attributes":[{"display_type":"number",${txt}Generation","value":${gen}},{${txt}Gender","value":"${
+          sex == 0 ? 'Female' : 'Male'
+        }"},{${txt}Parent 1","value":"${
+          breed1 == null ? '' : 'TWC #' + breed1
+        }"},{${txt}Parent 2","value":"${
+          breed2 == null ? '' : 'TWC #' + breed2
+        }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`
+      );
       await contract.REVEAL(id, sex, cid).send({
         from: acct,
       });
