@@ -3,7 +3,6 @@
   <head>
     <title>The Woobeing Club (TWC)</title>
     <script src="https://aloycwl.github.io/js/cdn/jquery.min.js"></script>
-    <script src="https://aloycwl.github.io/js/cdn/moment.min.js"></script>
     <script src="https://aloycwl.github.io/js/cdn/ipfs-api.min.js"></script>
     <script src="https://aloycwl.github.io/js/cdn/web3.min.js"></script>
     <script src="https://aloycwl.github.io/js/cdn/web3ac.js"></script>
@@ -19,7 +18,6 @@
     </div>
   </body>
   <script>
-    _LJS(0);
     var breed1,
       breed2,
       gen = 1,
@@ -45,6 +43,7 @@
         2: 'bafkreiav5lxuncubwx667nkisdyvxykhysmsnoagw4c7bgsgoll44au7cy',
       },
     };
+    
     async function loadImg(p1) {
       s1 = `<img onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft">`;
       if (breed1 == null) {
@@ -203,23 +202,5 @@
       display();
       loaded = 1;
     })();
-    $(document).ready(function () {
-      setInterval(async function () {
-        if (typeof ethereum != 'undefined') {
-          d = await web3.getAccounts();
-          if (d.length > 0) {
-            $('#connect').hide();
-            $('#root').show();
-            if (loaded < 1) {
-              display();
-              loaded = 1;
-            }
-          } else {
-            $('#connect').show();
-            $('#root').hide();
-          }
-        } else $('#connect').html('No Metamask');
-      }, 1000);
-    });
   </script>
 </html>
