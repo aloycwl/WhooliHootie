@@ -1,4 +1,4 @@
-# OMG Front End
+# The Woobeing Club (TWC) Frontend
 
 Contains the frontend interface file for all of Owl Merge Group files
 
