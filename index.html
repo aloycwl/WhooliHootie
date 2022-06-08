@@ -43,7 +43,7 @@
         2: 'bafkreiav5lxuncubwx667nkisdyvxykhysmsnoagw4c7bgsgoll44au7cy',
       },
     };
-    
+    _LJS(0);
     async function loadImg(p1) {
       s1 = `<img onclick="unloadImg()"src="${src}${nfts[7][p1]}"class="nft">`;
       if (breed1 == null) {
@@ -125,6 +125,7 @@
           for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
       }
       for (i = 0; i < nfts[0].length; i++) {
+
         sex = nfts[4][i];
         nfts[7][i] = img[nfts[3][i]][sex];
         $('#myWH').append(
