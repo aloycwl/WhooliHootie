@@ -8,7 +8,7 @@
     <script src="https://aloycwl.github.io/js/cdn/web3ac.js"></script>
   </head>
   <body>
-    <a id="connect" onclick="load()">Connect<br /></a>
+    <a id="connect" onclick="connect()">Connect<br /></a>
     <div id="root">
       <b id="name"></b>
       <b id="breed" onclick="BREED()"></b><br />
@@ -63,7 +63,7 @@
         if (p2 == p4) $(`#o${p3}`).hide();
       }
       if (breed1 > 0 && breed2 > 0) {
-        d = await contracta.gen(parseInt(nfts[3][p1]) + 1).call();
+        d = await contracta.methods.gen(parseInt(nfts[3][p1]) + 1).call();
         $('#breed').html(` | BREED (${d[1]}/${d[0]})`);
       }
       gen = parseInt(nfts[3][p1]) + 1;
@@ -77,7 +77,7 @@
       for (i = 0; i < nfts[0].length; i++) $('#o' + nfts[5][i]).show();
     }
     async function MINT() {
-      await contract.MINT(img[0][1]).send({
+      await contract.methods.MINT(img[0][1]).send({
         from: acct,
         value: 0.0e18,
       });
@@ -86,7 +86,7 @@
     async function BREED() {
       if (owlWallet < 30) $('#breed').html(`Insufficient OWL Token`);
       else {
-        await contract.BREED(breed1, breed2, img[0][gen]).send(FA);
+        await contract.methods.BREED(breed1, breed2, img[0][gen]).send(FA);
         location.reload();
       }
     }
@@ -105,53 +105,10 @@
           breed2 == null ? '' : 'TWC #' + breed2
         }"},{"display_type":"date",${txt}Hatched on","value":${Date.now()}}]}`
       );
-      await contract.REVEAL(id, sex, cid).send(FA);
+      await contract.methods.REVEAL(id, sex, cid).send(FA);
       location.reload();
     }
-    async function display() {
-      gen = await contract.gen(1).call();
-      owlWallet = (await contract2.balanceOf(acct).call()) / 1e18;
-      $('#name').html(
-        `Pool: ${
-          (await contract.getBalance.call().call()) / 1e18
-        } ETH | Wallet: ${owlWallet.toLocaleString()} POT |
-        <a onclick="MINT()">Mint (${gen[1]}/${gen[0]})</a>`
-      );
-      pi = await contracta.PLAYERITEMS(acct).call();
-      nfts = [];
-      for (i = 0; i < 8; i++) {
-        nfts[i] = [];
-        if (i < 8)
-          for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
-      }
-      for (i = 0; i < nfts[0].length; i++) {
-
-        sex = nfts[4][i];
-        nfts[7][i] = img[nfts[3][i]][sex];
-        $('#myWH').append(
-          `<p id="o${nfts[5][i]}"class="boxnft"><b>TWC #${nfts[5][i]}
-      </b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded:${
-            nfts[2][i] > 0
-              ? moment(moment.unix(nfts[2][i])).fromNow()
-              : 'Since forever'
-          }<br/>Generation: ${nfts[3][i]} (${
-            sex < 1 ? 'Egg' : sex < 2 ? 'Female' : 'Male'
-          })
-      <br/><img src="${src}${nfts[7][i]}${
-            moment
-              .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
-              .asSeconds() > /*60480*/ 0 &&
-            nfts[6][i] > 0 &&
-            sex > 0
-              ? `"onclick="loadImg(${i})"class="nft`
-              : `"class="nobreed`
-          }">${
-            sex < 1 ? `<br><a onclick="REVEAL(${nfts[5][i]})">Reveal</a>` : ``
-          }</p> `
-        );
-      }
-    }
-    (async () => {
+    async function connect() {
       await load(
         [
           {
@@ -200,8 +157,46 @@
         '0x98F8CdA46159fA10583956C530D259929F0b6088'
       );
       await load2();
-      display();
-      loaded = 1;
-    })();
+      gen = await contract.methods.gen(1).call();
+      owlWallet = (await contract2.methods.balanceOf(acct).call()) / 1e18;
+      $('#name').html(
+        `Pool: ${
+          (await contract.methods.getBalance.call().call()) / 1e18
+        } ETH | Wallet: ${owlWallet.toLocaleString()} POT |
+        <a onclick="MINT()">Mint (${gen[1]}/${gen[0]})</a>`
+      );
+      pi = await contracta.methods.PLAYERITEMS(acct).call();
+      nfts = [];
+      for (i = 0; i < 8; i++) {
+        nfts[i] = [];
+        if (i < 8)
+          for (j = 0; j < pi.length / 7; j++) nfts[i][j] = pi[j * 7 + i];
+      }
+      for (i = 0; i < nfts[0].length; i++) {
+        sex = nfts[4][i];
+        nfts[7][i] = img[nfts[3][i]][sex];
+        $('#myWH').append(
+          `<p id="o${nfts[5][i]}"class="boxnft"><b>TWC #${nfts[5][i]}
+      </b><br/>Parents : ${nfts[0][i]} + ${nfts[1][i]}<br/>Last breeded:${
+            nfts[2][i] > 0
+              ? moment(moment.unix(nfts[2][i])).fromNow()
+              : 'Since forever'
+          }<br/>Generation: ${nfts[3][i]} (${
+            sex < 1 ? 'Egg' : sex < 2 ? 'Female' : 'Male'
+          })
+      <br/><img src="${src}${nfts[7][i]}${
+            moment
+              .duration(moment().diff(moment(moment.unix(nfts[2][i]))))
+              .asSeconds() > /*60480*/ 0 &&
+            nfts[6][i] > 0 &&
+            sex > 0
+              ? `"onclick="loadImg(${i})"class="nft`
+              : `"class="nobreed`
+          }">${
+            sex < 1 ? `<br><a onclick="REVEAL(${nfts[5][i]})">Reveal</a>` : ``
+          }</p> `
+        );
+      }
+    }
   </script>
 </html>
