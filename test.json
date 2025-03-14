@@ -1,0 +1,30 @@
+{
+  "id": 1,
+  "image": "YOUR_IMAGE_URL",
+  "token_id": "1",
+  "background_color": null,
+  "animation_url": null,
+  "youtube_url": null,
+  "name": "Test zkEVM NFT",
+  "description": "This NFT is my first zkEVM NFT created on Immutable",
+  "external_url": null,
+  "attributes": [
+    {
+      "trait_type": "Hat",
+      "value": "Top Hat"
+    },
+    {
+      "trait_type": "Coat",
+      "value": "Tails"
+    },
+    {
+      "trait_type": "Neck",
+      "value": "Bow Tie"
+    },
+    {
+      "display_type": "number",
+      "trait_type": "Level",
+      "value": 1
+    }
+  ]
+}
